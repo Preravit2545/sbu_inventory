@@ -3,7 +3,7 @@ import { useState } from "react";
 
 function ProductManagement() {
 
-    const [ProductList, setProductList] = useState([]);
+    const [ProductList, setProductList] = useState<any[]>([]);
 
     const getProduct = () => {
         axios.get('http://localhost:3001/staff').then((response) => {
@@ -66,10 +66,10 @@ function ProductManagement() {
                     return(
                         <div className="product card">
                             <div className="class-body text-left"></div>
-                            <p className="card-text">Name : </p>
-                            <p className="card-text">Type : </p>
-                            <p className="card-text">Qty : </p>
-                            <p className="card-text">Status : </p>
+                            <p className="card-text">Name : {val.id}</p>
+                            <p className="card-text">Type : {val.username}</p>
+                            <p className="card-text">Qty : {val.password}</p>
+                            <p className="card-text">Status : {val.Status}</p>
                         </div>
                     )
 
