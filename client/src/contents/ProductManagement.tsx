@@ -66,6 +66,7 @@ function ProductManagement() {
                     return (
                         <div className="product card">
                             <div className="class-body text-left"></div>
+                            {val.image && <img src={`data:image/jpeg;base64,${val.image}`} alt={val.name} style={{ width: '100px', height: '100px' }} />}
                             <p className="card-text">id : {val.id}</p>
                             <p className="card-text">name : {val.name}</p>
                             <p className="card-text">Type : {val.type}</p>

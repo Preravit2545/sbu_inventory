@@ -31,9 +31,14 @@ app.get('/product', (req, res) => {
     db.query("SELECT * FROM products", (err, result) => {
         if (err) {
             console.error("Error executing query:", err);
-            res.status(500).send("An error occurred while retrieving staff data.");
+            res.status(500).send("An error occurred while retrieving product data.");
         } else {
-            res.json(result); // Send the result as JSON
+            // Convert the image to a base64 string for each product
+            const products = result.map(product => ({
+                ...product,
+                image: product.image ? Buffer.from(product.image).toString('base64') : null
+            }));
+            res.json(products); // Send the products as JSON
         }
     });
 });
