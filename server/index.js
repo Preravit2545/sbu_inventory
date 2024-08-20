@@ -25,12 +25,24 @@ db.connect((err) => {
     }
 });
 
-// Define the /staff route
-app.get('/staff', (req, res) => {
-    db.query("SELECT * FROM staff", (err, result) => {
+
+// Define the /product route
+app.get('/product', (req, res) => {
+    db.query("SELECT * FROM products", (err, result) => {
         if (err) {
             console.error("Error executing query:", err);
             res.status(500).send("An error occurred while retrieving staff data.");
+        } else {
+            res.json(result); // Send the result as JSON
+        }
+    });
+});
+
+app.get('/user', (req, res) => {
+    db.query("SELECT * FROM staff", (err, result) => {
+        if (err) {
+            console.error("Error executing query:", err);
+            res.status(500).send("An error occurred while retrieving user data.");
         } else {
             res.json(result); // Send the result as JSON
         }

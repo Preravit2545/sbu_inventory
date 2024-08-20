@@ -1,4 +1,16 @@
+import axios from "axios";
+import { useState } from "react";
+
 function UserManagement() {
+
+    const [UserList, setUserList] = useState<any[]>([]);
+
+    const getUser = () => {
+        axios.get('http://localhost:3001/user').then((response) => {
+            setUserList(response.data);
+        });
+    }
+
     return (
         <div className="content-wrapper">
 
@@ -52,7 +64,22 @@ function UserManagement() {
             </div>
             <hr />
             <div className="user">
-                <button className="btn btn-primary">แสดงผู้ใช้</button>
+                <button className="btn btn-primary" onClick={getUser}>แสดงผู้ใช้</button>
+
+                {UserList.map((val, key) => {
+                    return (
+                        <div className="user card">
+                            <div className="class-body text-left"></div>
+                            <p className="card-text">id : {val.id}</p>
+                            <p className="card-text">name : {val.name}</p>
+                            <p className="card-text">Type : {val.type}</p>
+                            <p className="card-text">Qty : {val.qty}</p>
+                            <p className="card-text">Status : {val.status}</p>
+                        </div>
+                    )
+
+                })}
+
             </div>
         </div>
     );

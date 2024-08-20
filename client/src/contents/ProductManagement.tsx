@@ -6,7 +6,7 @@ function ProductManagement() {
     const [ProductList, setProductList] = useState<any[]>([]);
 
     const getProduct = () => {
-        axios.get('http://localhost:3001/staff').then((response) => {
+        axios.get('http://localhost:3001/product').then((response) => {
             setProductList(response.data);
         });
     }
@@ -63,13 +63,14 @@ function ProductManagement() {
                 <button className="btn btn-primary" onClick={getProduct}>แสดงผู้ใช้</button>
 
                 {ProductList.map((val, key) => {
-                    return(
+                    return (
                         <div className="product card">
                             <div className="class-body text-left"></div>
-                            <p className="card-text">Name : {val.id}</p>
-                            <p className="card-text">Type : {val.username}</p>
-                            <p className="card-text">Qty : {val.password}</p>
-                            <p className="card-text">Status : {val.Status}</p>
+                            <p className="card-text">id : {val.id}</p>
+                            <p className="card-text">name : {val.name}</p>
+                            <p className="card-text">Type : {val.type}</p>
+                            <p className="card-text">Qty : {val.qty}</p>
+                            <p className="card-text">Status : {val.status}</p>
                         </div>
                     )
 
