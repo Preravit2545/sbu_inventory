@@ -1,7 +1,13 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { useState } from "react";
 
 function ProductManagement() {
+
+    const [name, setName] = useState("");
+    const [type, setType] = useState("");
+    const [qty, setQty] = useState(0);
+    const [image, setImage] = useState("");
+    const [status, setStatus] = useState("มี"); 
 
     const [ProductList, setProductList] = useState<any[]>([]);
 
@@ -9,6 +15,16 @@ function ProductManagement() {
         axios.get('http://localhost:3001/product').then((response) => {
             setProductList(response.data);
         });
+    }
+
+    const addProduct = () => {
+        axios.post('http://localhost:3001/create',{
+            name : name,
+            type : type,
+            qty : qty,
+            image : image,
+            status : status
+        })
     }
 
     return (
@@ -25,17 +41,17 @@ function ProductManagement() {
                     <div className="container-fluid">
                         <div className="mb-3">
                             <label htmlFor="name" className="form-label">ชื่อทรัพย์สิน :</label>
-                            <input type="text" className="form-control" placeholder="Product name" />
+                            <input type="text" className="form-control" placeholder="Product name" onChange={(event)=>setName(event.target.value)} />
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="qty" className="form-label">จำนวน :</label>
-                            <input type="text" className="form-control" placeholder="0" />
+                            <input type="number" className="form-control" placeholder="0" onChange={(event)=>setQty(Number(event.target.value))} />
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="userRole" className="form-label">ประเภททรัพย์สิน :</label>
-                            <select className="form-control">
+                            <select className="form-control" onChange={(event)=>setType(event.target.value)}>
                                 <option value="เจ้าหน้าที่"> </option>
                                 <option value="อาจารย์"></option>
                             </select>
@@ -43,7 +59,7 @@ function ProductManagement() {
 
                         <div className="mb-3">
                             <label htmlFor="Status" className="form-label">สถานะทรัพย์สิน :</label>
-                            <select className="form-control">
+                            <select className="form-control" onChange={(event)=>setStatus(event.target.value)}>
                                 <option value="มี">มี</option>
                                 <option value="หมด">หมด</option>
                             </select>
@@ -61,7 +77,7 @@ function ProductManagement() {
             <hr />
             <div className="user">
                 <button className="btn btn-primary" onClick={getProduct}>แสดงผู้ใช้</button>
-
+                <br />
                 {ProductList.map((val, key) => {
                     return (
                         <div className="product card">
