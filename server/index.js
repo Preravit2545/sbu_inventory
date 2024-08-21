@@ -33,6 +33,54 @@ db.connect((err) => {
     }
 });
 
+//start dashboard
+app.get('/count/staff', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM staff", (err, result) => {
+        if (err) {
+            console.error("Error fetching staff count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/products', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM products", (err, result) => {
+        if (err) {
+            console.error("Error fetching product count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/teachers', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM teachers", (err, result) => {
+        if (err) {
+            console.error("Error fetching teacher count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/orders', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM orders", (err, result) => {
+        if (err) {
+            console.error("Error fetching order count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+//end dashboard
+
+
+
 // Define the /product route
 app.get('/product', (req, res) => {
     db.query("SELECT * FROM products", (err, result) => {
@@ -102,7 +150,6 @@ app.post('/adduser', upload.single('image'), (req, res) => {
         }
     });
 });
-
 
 // Start the server
 app.listen(3001, () => {
