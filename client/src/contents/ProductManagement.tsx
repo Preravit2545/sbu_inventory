@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ProductManagement() {
     const [name, setName] = useState("");
@@ -14,6 +14,24 @@ function ProductManagement() {
             setProductList(response.data);
         });
     };
+
+    useEffect(() => {
+        getProduct();
+      }, []);
+
+    const deleteProduct = (id: number) => {
+        if (window.confirm("Are you sure you want to delete this product?")) {
+          axios.delete(`http://localhost:3001/delete/product/${id}`)
+            .then(response => {
+              alert(response.data);
+              setProductList(ProductList.filter(product => product.id !== id));
+            })
+            .catch(error => {
+              console.error("There was an error deleting the product!", error);
+            });
+        }
+      };
+    
 
     const handleAddProduct = (event: React.FormEvent) => {
         event.preventDefault();
@@ -127,6 +145,7 @@ function ProductManagement() {
                                 <p className="card-text">Type : {val.type}</p>
                                 <p className="card-text">Qty : {val.qty}</p>
                                 <p className="card-text">Status : {val.status === 1 ? 'มี' : 'หมด'}</p>
+                                <button className="btn btn-danger" onClick={() => deleteProduct(val.id)}>Delete</button>
                             </div>
                         </div>
                     ))}

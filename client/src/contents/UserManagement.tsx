@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function UserManagement() {
     const [UserList, setUserList] = useState<any[]>([]);
@@ -25,6 +25,30 @@ function UserManagement() {
             setSelectedButton('staff'); // Update selected button
         });
     }
+
+    const getUsers = () => {
+        axios.get(`http://localhost:3001/user?position=${position}`).then((response) => {
+            setUserList(response.data);
+        });
+    };
+
+    useEffect(() => {
+        getUsers();
+    }, [position]);
+
+    const deleteUser = (id: number, role: string) => {
+        if (window.confirm(`Are you sure you want to delete this ${role === 'staff' ? 'staff member' : 'teacher'}?`)) {
+            const endpoint = role === 'staff' ? `staff` : `teacher`;
+            axios.delete(`http://localhost:3001/delete/${endpoint}/${id}`)
+                .then(response => {
+                    alert(response.data);
+                    setUserList(UserList.filter(user => user.id !== id));
+                })
+                .catch(error => {
+                    console.error("There was an error deleting the user!", error);
+                });
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -145,17 +169,16 @@ function UserManagement() {
             <div className="user">
                 <div className="btn-group" role="group">
                     <button
-                        className={`btn ${selectedButton === 'staff' ? 'btn-primary' : 'btn-secondary'}`}
-                        onClick={getStaff}
-                        style={{ marginRight: '10px' }}
+                        className={`btn ${position === 'staff' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setPosition('staff')}
                     >
-                        แสดงเจ้าหน้าที่
+                        Show Staff
                     </button>
                     <button
-                        className={`btn ${selectedButton === 'teacher' ? 'btn-primary' : 'btn-secondary'}`}
-                        onClick={getTeachers}
+                        className={`btn ${position === 'teacher' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setPosition('teacher')}
                     >
-                        แสดงอาจารย์
+                        Show Teachers
                     </button>
                 </div>
                 <div style={{ marginTop: '20px' }}>
@@ -173,6 +196,12 @@ function UserManagement() {
                                 <p className="card-text">ชื่อจริง : {val.firstname}</p>
                                 <p className="card-text">นามสกุล : {val.lastname}</p>
                                 <p className="card-text">เบอร์โทร : {val.phone}</p>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={() => deleteUser(val.id, position)}
+                                >
+                                    Delete {position === 'staff' ? 'Staff' : 'Teacher'}
+                                </button>
                             </div>
                         </div>
                     ))}

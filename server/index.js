@@ -79,8 +79,6 @@ app.get('/count/orders', (req, res) => {
 });
 //end dashboard
 
-
-
 // Define the /product route
 app.get('/product', (req, res) => {
     db.query("SELECT * FROM products", (err, result) => {
@@ -150,6 +148,48 @@ app.post('/adduser', upload.single('image'), (req, res) => {
         }
     });
 });
+
+app.delete('/delete/product/:id', (req, res) => {
+    const productId = req.params.id;
+
+    db.query("DELETE FROM products WHERE id = ?", [productId], (err, result) => {
+        if (err) {
+            console.error("Error deleting product:", err);
+            res.status(500).send("There was an error deleting the product.");
+        } else {
+            res.send("Product deleted successfully!");
+        }
+    });
+});
+
+// Delete a staff member
+app.delete('/delete/staff/:id', (req, res) => {
+    const staffId = req.params.id;
+
+    db.query("DELETE FROM staff WHERE id = ?", [staffId], (err, result) => {
+        if (err) {
+            console.error("Error deleting staff member:", err);
+            res.status(500).send("There was an error deleting the staff member.");
+        } else {
+            res.send("Staff member deleted successfully!");
+        }
+    });
+});
+
+// Delete a teacher
+app.delete('/delete/teacher/:id', (req, res) => {
+    const teacherId = req.params.id;
+
+    db.query("DELETE FROM teachers WHERE id = ?", [teacherId], (err, result) => {
+        if (err) {
+            console.error("Error deleting teacher:", err);
+            res.status(500).send("There was an error deleting the teacher.");
+        } else {
+            res.send("Teacher deleted successfully!");
+        }
+    });
+});
+
 
 // Start the server
 app.listen(3001, () => {
