@@ -102,18 +102,6 @@ function ProductManagement() {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="status" className="form-label">สถานะทรัพย์สิน :</label>
-                            <select
-                                className="form-control"
-                                value={status}
-                                onChange={(e) => setStatus(Number(e.target.value))}
-                            >
-                                <option value={1}>มี</option>
-                                <option value={0}>หมด</option>
-                            </select>
-                        </div>
-
-                        <div className="mb-3">
                             <label htmlFor="image" className="form-label">รูปสินค้า :</label>
                             <input
                                 type="file"

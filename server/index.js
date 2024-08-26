@@ -97,8 +97,10 @@ app.get('/product', (req, res) => {
 
 // Define the /addproduct route
 app.post('/addproduct', upload.single('image'), (req, res) => {
-    const { name, type, qty, status } = req.body;
+    const { name, type, qty } = req.body;
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
+
+    const status = qty > 0 ? 1 : 0;
 
     const sqlInsert = "INSERT INTO products (name, type, qty, image, status) VALUES (?, ?, ?, ?, ?)";
 

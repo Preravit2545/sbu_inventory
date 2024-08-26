@@ -12,6 +12,7 @@ function UserManagement() {
     const [image, setImage] = useState<File | null>(null);
     const [selectedButton, setSelectedButton] = useState<string>(''); // Track selected button
 
+    
     const getTeachers = () => {
         axios.get('http://localhost:3001/user?position=teacher').then((response) => {
             setUserList(response.data);
@@ -25,6 +26,7 @@ function UserManagement() {
             setSelectedButton('staff'); // Update selected button
         });
     }
+    
 
     const getUsers = () => {
         axios.get(`http://localhost:3001/user?position=${position}`).then((response) => {
