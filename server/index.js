@@ -192,6 +192,35 @@ app.delete('/delete/teacher/:id', (req, res) => {
     });
 });
 
+// Define the /updateproduct route
+app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
+    const { id } = req.params;
+    const { name, type, qty } = req.body;
+    const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
+
+    const status = qty > 0 ? 1 : 0;
+
+    let sqlUpdate = "UPDATE products SET name = ?, type = ?, qty = ?, status = ?";
+    const params = [name, type, qty, status];
+
+    if (image) {
+        sqlUpdate += ", image = ?";
+        params.push(image);
+    }
+
+    sqlUpdate += " WHERE id = ?";
+    params.push(id);
+
+    db.query(sqlUpdate, params, (err, result) => {
+        if (err) {
+            console.error("Error updating product:", err);
+            res.status(500).send("An error occurred while updating the product.");
+        } else {
+            res.send("Product updated successfully!");
+        }
+    });
+});
+
 
 // Start the server
 app.listen(3001, () => {
