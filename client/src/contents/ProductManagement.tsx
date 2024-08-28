@@ -218,11 +218,11 @@ function ProductManagement() {
                                     </form>
                                 ) : (
                                     <>
-                                        <p className="card-text">id : {val.id}</p>
-                                        <p className="card-text">name : {val.name}</p>
-                                        <p className="card-text">Type : {val.type}</p>
-                                        <p className="card-text">Qty : {val.qty}</p>
-                                        <p className="card-text">Status : {val.status === 1 ? 'มี' : 'หมด'}</p>
+                                        <p className="card-text">รหัส : {val.id}</p>
+                                        <p className="card-text">ชื่อทรัพย์สิน : {val.name}</p>
+                                        <p className="card-text">ประเภททรัพย์สิน : {val.type}</p>
+                                        <p className="card-text">จำนวน : {val.qty}</p>
+                                        <p className="card-text">สถานะ : {val.status === 1 ? 'มี' : 'หมด'}</p>
                                         <button className="btn btn-warning" onClick={() => startEditingProduct(val)}>Edit</button>
                                         <button className="btn btn-danger" onClick={() => deleteProduct(val.id)}>Delete</button>
                                     </>
