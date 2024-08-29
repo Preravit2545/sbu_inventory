@@ -221,6 +221,35 @@ app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
     });
 });
 
+// Define the /updateuser route
+app.put('/updateuser/:id', upload.single('image'), (req, res) => {
+    const { id } = req.params;
+    const { username, password, firstname, lastname, phone, position } = req.body;
+    const table = position === 'teacher' ? 'teachers' : 'staff';
+    const image = req.file ? req.file.buffer : null;
+
+    let sqlUpdate = `UPDATE ${table} SET username = ?, password = ?, firstname = ?, lastname = ?, phone = ?`;
+    const params = [username, password, firstname, lastname, phone];
+
+    if (image) {
+        sqlUpdate += ", image = ?";
+        params.push(image);
+    }
+
+    sqlUpdate += " WHERE id = ?";
+    params.push(id);
+
+    db.query(sqlUpdate, params, (err, result) => {
+        if (err) {
+            console.error("Error updating user:", err);
+            res.status(500).send("An error occurred while updating the user.");
+        } else {
+            res.send("User updated successfully!");
+        }
+    });
+});
+
+
 
 // Start the server
 app.listen(3001, () => {

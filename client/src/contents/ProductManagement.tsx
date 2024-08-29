@@ -57,6 +57,7 @@ function ProductManagement() {
             });
     };
 
+    // start UPDATE
     const handleEditProduct = (event: React.FormEvent, id: number) => {
         event.preventDefault();
 
@@ -75,7 +76,6 @@ function ProductManagement() {
                 resetForm();
             });
     };
-
     const resetForm = () => {
         setName("");
         setType("");
@@ -84,19 +84,20 @@ function ProductManagement() {
         setStatus(1);
         setEditingProduct(null);
     };
-
     const startEditingProduct = (product: any) => {
         setEditingProduct(product.id);
         setName(product.name);
         setType(product.type);
         setQty(product.qty);
         setStatus(product.status);
-        setImage(null); // Optionally, you can set the existing image if required
+        setImage(null);
     };
 
     const cancelEdit = () => {
         resetForm();
     };
+    // end UPDATE
+
 
     return (
         <div className="content-wrapper">
@@ -105,7 +106,7 @@ function ProductManagement() {
                     <h1>จัดการข้อมูลทรัพย์สิน</h1>
                 </div>
             </div>
-
+            {/* ADD PRODUCT UI */}
             <div className="information">
                 <form onSubmit={handleAddProduct}>
                     <div className="container-fluid">
@@ -119,7 +120,6 @@ function ProductManagement() {
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
-
                         <div className="mb-3">
                             <label htmlFor="qty" className="form-label">จำนวน :</label>
                             <input
@@ -130,7 +130,6 @@ function ProductManagement() {
                                 onChange={(e) => setQty(Number(e.target.value))}
                             />
                         </div>
-
                         <div className="mb-3">
                             <label htmlFor="type" className="form-label">ประเภททรัพย์สิน :</label>
                             <select
@@ -142,7 +141,6 @@ function ProductManagement() {
                                 <option value="อาจารย์">อาจารย์</option>
                             </select>
                         </div>
-
                         <div className="mb-3">
                             <label htmlFor="image" className="form-label">รูปสินค้า :</label>
                             <input
@@ -151,18 +149,22 @@ function ProductManagement() {
                                 onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
                             />
                         </div>
-
                         <button type="submit" className="btn btn-success">เพิ่มทรัพย์สิน</button>
                     </div>
                 </form>
             </div>
+
             <hr />
+
             <div className="user">
+
                 <button className="btn btn-primary" onClick={getProduct}>แสดงทรัพย์สิน</button>
+
                 <div style={{ marginTop: '20px' }}>
                     {ProductList.map((val, key) => (
                         <div className="product card" key={key}>
                             <div className="card-body text-left">
+                                {/* IMAGE */}
                                 {val.image && (
                                     <img
                                         src={`data:image/jpeg;base64,${val.image}`}
@@ -170,6 +172,7 @@ function ProductManagement() {
                                         style={{ width: '100px', height: '100px', marginBottom: '10px' }}
                                     />
                                 )}
+                                {/* UPDATE PRODUCT */}
                                 {editingProduct === val.id ? (
                                     <form onSubmit={(e) => handleEditProduct(e, val.id)}>
                                         <div className="mb-3">
@@ -218,6 +221,7 @@ function ProductManagement() {
                                     </form>
                                 ) : (
                                     <>
+                                        {/* Show Product */}
                                         <p className="card-text">รหัส : {val.id}</p>
                                         <p className="card-text">ชื่อทรัพย์สิน : {val.name}</p>
                                         <p className="card-text">ประเภททรัพย์สิน : {val.type}</p>

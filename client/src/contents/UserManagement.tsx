@@ -11,8 +11,41 @@ function UserManagement() {
     const [position, setPosition] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [selectedButton, setSelectedButton] = useState<string>(''); // Track selected button
+    //UPDATE edit
+    const [editMode, setEditMode] = useState<number | null>(null); // Track which user is being edited
+    const [editedUser, setEditedUser] = useState<any>(null); // Track the edited user data
 
-    
+    const handleEditUser = (user: any) => {
+        setEditMode(user.id);
+        setEditedUser({ ...user }); // Clone the user object for editing
+    };
+
+    const handleUpdateUser = (id: number, position: string) => {
+        const formData = new FormData();
+        formData.append('username', editedUser.username);
+        formData.append('password', editedUser.password);
+        formData.append('firstname', editedUser.firstname);
+        formData.append('lastname', editedUser.lastname);
+        formData.append('phone', editedUser.phone);
+        formData.append('position', position); // Pass the position here
+        if (image) {
+            formData.append('image', image);
+        }
+
+        axios.put(`http://localhost:3001/updateuser/${id}`, formData)
+            .then(response => {
+                alert(response.data);
+                setEditMode(null); // Exit edit mode
+                getUsers(); // Refresh the list
+            })
+            .catch(error => {
+                console.error("There was an error updating the user!", error);
+            });
+    };
+
+
+
+
     const getTeachers = () => {
         axios.get('http://localhost:3001/user?position=teacher').then((response) => {
             setUserList(response.data);
@@ -26,7 +59,7 @@ function UserManagement() {
             setSelectedButton('staff'); // Update selected button
         });
     }
-    
+
 
     const getUsers = () => {
         axios.get(`http://localhost:3001/user?position=${position}`).then((response) => {
@@ -187,23 +220,81 @@ function UserManagement() {
                     {UserList.map((val, key) => (
                         <div key={key} className="user card">
                             <div className="card-body text-left">
-                                {val.image && (
-                                    <img
-                                        src={`data:image/jpeg;base64,${val.image}`}
-                                        alt={val.firstname}
-                                        style={{ width: '100px', height: '100px', marginBottom: '10px' }}
-                                    />
+                                {editMode === val.id ? (
+                                    <>
+                                        <div className="mb-3">
+                                            <label>Username:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editedUser.username}
+                                                onChange={(e) => setEditedUser({ ...editedUser, username: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label>Password:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editedUser.password}
+                                                onChange={(e) => setEditedUser({ ...editedUser, password: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label>First Name:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editedUser.firstname}
+                                                onChange={(e) => setEditedUser({ ...editedUser, firstname: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label>Last Name:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editedUser.lastname}
+                                                onChange={(e) => setEditedUser({ ...editedUser, lastname: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label>Phone:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editedUser.phone}
+                                                onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+                                            />
+                                        </div>
+                                        <button className="btn btn-success" onClick={() => handleUpdateUser(val.id, position)}>
+                                            Update
+                                        </button>
+                                        <button className="btn btn-secondary" onClick={() => setEditMode(null)}>
+                                            Cancel
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        {val.image && (
+                                            <img
+                                                src={`data:image/jpeg;base64,${val.image}`}
+                                                alt={val.firstname}
+                                                style={{ width: '100px', height: '100px', marginBottom: '10px' }}
+                                            />
+                                        )}
+                                        <p className="card-text">id : {val.id}</p>
+                                        <p className="card-text">ชื่อจริง : {val.firstname}</p>
+                                        <p className="card-text">นามสกุล : {val.lastname}</p>
+                                        <p className="card-text">เบอร์โทร : {val.phone}</p>
+                                        <button className="btn btn-warning" onClick={() => handleEditUser(val)}>
+                                            Edit
+                                        </button>
+                                        <button className="btn btn-danger" onClick={() => deleteUser(val.id, position)}>
+                                            Delete {position === 'staff' ? 'Staff' : 'Teacher'}
+                                        </button>
+                                    </>
                                 )}
-                                <p className="card-text">id : {val.id}</p>
-                                <p className="card-text">ชื่อจริง : {val.firstname}</p>
-                                <p className="card-text">นามสกุล : {val.lastname}</p>
-                                <p className="card-text">เบอร์โทร : {val.phone}</p>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={() => deleteUser(val.id, position)}
-                                >
-                                    Delete {position === 'staff' ? 'Staff' : 'Teacher'}
-                                </button>
                             </div>
                         </div>
                     ))}
