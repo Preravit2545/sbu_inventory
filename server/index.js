@@ -4,10 +4,12 @@ const mysql = require('mysql');
 const cors = require('cors');
 const multer = require('multer'); // To handle file uploads
 const path = require('path');
+const helmet = require('helmet');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
 
 // Configure multer for file uploads
 const upload = multer({
@@ -249,7 +251,32 @@ app.put('/updateuser/:id', upload.single('image'), (req, res) => {
     });
 });
 
+// Define the /login route
+app.post('/login', (req, res) => {
+    const { username, password, userType } = req.body;
 
+    // Determine which table to query based on userType
+    const table = userType === 'teacher' ? 'teachers' :
+                  userType === 'admin' ? 'admin' : 'staff';
+
+    db.query(`SELECT * FROM ${table} WHERE username = ?`, [username], (err, results) => {
+        if (err) {
+            console.error("Error executing query:", err);
+            res.status(500).send("An error occurred during login.");
+        } else if (results.length === 0) {
+            res.status(401).send("Invalid username or password.");
+        } else {
+            const user = results[0];
+
+            // Assuming passwords are stored as plain text
+            if (password === user.password) {
+                res.status(200).json({ message: "Login successful!" });
+            } else {
+                res.status(401).send("Invalid username or password.");
+            }
+        }
+    });
+});
 
 // Start the server
 app.listen(3001, () => {
