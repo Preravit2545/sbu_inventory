@@ -207,13 +207,13 @@ function UserManagement() {
                         className={`btn ${position === 'staff' ? 'btn-primary' : 'btn-secondary'}`}
                         onClick={() => setPosition('staff')}
                     >
-                        Show Staff
+                        แสดงเจ้าหน้าที่
                     </button>
                     <button
                         className={`btn ${position === 'teacher' ? 'btn-primary' : 'btn-secondary'}`}
                         onClick={() => setPosition('teacher')}
                     >
-                        Show Teachers
+                        แสดงอาจารย์
                     </button>
                 </div>
                 <div style={{ marginTop: '20px' }}>

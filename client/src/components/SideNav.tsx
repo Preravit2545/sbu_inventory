@@ -43,7 +43,7 @@ function SideNav() {
                 <Link to="/" className="nav-link">
                   <i className="nav-icon ion ion-pie-graph" />
                   <p>
-                      Dashboard
+                    Dashboard
                   </p>
                 </Link>
               </li>
@@ -51,7 +51,7 @@ function SideNav() {
                 <Link to="ProductManagement" className="nav-link">
                   <i className="nav-icon ion ion-clipboard" />
                   <p>
-                      จัดการข้อมูลทรัพย์สิน
+                    จัดการข้อมูลทรัพย์สิน
                   </p>
                 </Link>
               </li>
@@ -61,6 +61,12 @@ function SideNav() {
                   <p>
                     จัดการข้อมูลผู้ใช้
                   </p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/OrderForm" className="nav-link">
+                  <i className="nav-icon ion ion-bag" />
+                  <p>คำสั่งซื้อ</p> 
                 </Link>
               </li>
             </ul>

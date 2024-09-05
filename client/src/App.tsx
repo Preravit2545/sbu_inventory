@@ -9,6 +9,7 @@ import Dashboard from './contents/Dashboard';
 import UserManagement from './contents/UserManagement';
 import ProductManagement from './contents/ProductManagement';
 import LoginForm from './contents/Login/LoginForm';
+import OrderForm from './contents/OrderForm';  // Import OrderForm
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/UserManagement" element={<UserManagement />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
+          <Route path="/OrderForm" element={<OrderForm />} />  {/* Add OrderForm route */}
         </Routes>
       </main>
       {location.pathname !== '/' && <SideNav />}
