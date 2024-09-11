@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./LoginForm.css";
 
 interface LoginFormProps {
-    onLogin: () => void;
+    onLogin: (userType: 'staff' | 'teacher' | 'admin') => void;
 }
 
 function LoginForm({ onLogin }: LoginFormProps) {
@@ -32,7 +32,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
 
         axios.post('http://localhost:3001/login', loginData)
             .then(() => {
-                onLogin();
+                onLogin(userType); // Pass the userType to onLogin
             })
             .catch(() => {
                 setError("Invalid username or password.");
