@@ -16,11 +16,16 @@ import Return_Product from './contents/Return_Product';
 function App() {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState<'staff' | 'teacher' | 'admin'>('staff');
+  const [userType, setUserType] = useState<'staff' | 'teacher' | 'admin' | null>('staff');
 
   const handleLogin = (userType: 'staff' | 'teacher' | 'admin') => {
     setIsLoggedIn(true);
     setUserType(userType); // Set userType after login
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserType(null); // Reset userType on logout
   };
 
   return (
@@ -46,7 +51,7 @@ function App() {
           <Route path="/Return_Product" element={<Return_Product />} />
         </Routes>
       </main>
-      {location.pathname !== '/' && isLoggedIn && <SideNav userType={userType} />}
+      {location.pathname !== '/' && isLoggedIn && <SideNav userType={userType} onLogout={handleLogout} />}
       {/* <Footer /> */}
     </div>
   );

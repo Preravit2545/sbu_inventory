@@ -2,19 +2,18 @@ import { Link, useNavigate } from 'react-router-dom';
 
 interface SideNavProps {
   userType: 'staff' | 'teacher' | 'admin' | null;
+  onLogout: () => void; // Add a logout function prop
 }
 
-function SideNav({ userType }: SideNavProps) {
+function SideNav({ userType, onLogout }: SideNavProps) {
   const navigate = useNavigate();
 
-  // Logout function to clear user session and navigate to the login page
-  const handleLogout = () => {
-    // Clear localStorage/sessionStorage or cookie
-    localStorage.removeItem('token'); // Example, adjust based on your authentication mechanism
-    navigate('/'); // Redirect to login page
-  };
-
   if (!userType) return null;
+
+  const handleLogout = () => {
+    onLogout();
+    navigate('/'); // Redirect to login page after logging out
+  };
 
   return (
     <div>
@@ -65,7 +64,7 @@ function SideNav({ userType }: SideNavProps) {
                   </li>
                   <li className="nav-item">
                     <Link to="/Return_Product" className="nav-link">
-                      <i className="nav-icon ion ion-arrow-return-left"/>
+                      <i className="nav-icon ion ion-arrow-return-left" />
                       <p>คืน</p>
                     </Link>
                   </li>
@@ -87,7 +86,15 @@ function SideNav({ userType }: SideNavProps) {
                     </Link>
                   </li>
                 </>
-              )}   
+              )}
+
+              {/* Logout Button */}
+              <li className="nav-item">
+                <button className="nav-link" onClick={handleLogout} >
+                  <i className="nav-icon ion ion-log-out" />
+                  <p>Logout</p>
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
