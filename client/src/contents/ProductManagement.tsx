@@ -33,7 +33,6 @@ function ProductManagement() {
         }
       };
     
-
     const handleAddProduct = (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -76,6 +75,7 @@ function ProductManagement() {
                 resetForm();
             });
     };
+
     const resetForm = () => {
         setName("");
         setType("");
@@ -84,6 +84,7 @@ function ProductManagement() {
         setStatus(1);
         setEditingProduct(null);
     };
+    
     const startEditingProduct = (product: any) => {
         setEditingProduct(product.id);
         setName(product.name);
@@ -137,8 +138,8 @@ function ProductManagement() {
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
                             >
-                                <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
-                                <option value="อาจารย์">อาจารย์</option>
+                                <option value="เครื่องใช้สำนักงาน">เครื่องใช้สำนักงาน</option>
+                                <option value="อุปกรณ์ไอที">อุปกรณ์ไอที</option>
                             </select>
                         </div>
                         <div className="mb-3">
