@@ -255,7 +255,6 @@ app.put('/updateuser/:id', upload.single('image'), (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password, userType } = req.body;
 
-    // Determine which table to query based on userType
     const table = userType === 'teacher' ? 'teachers' :
                   userType === 'admin' ? 'admin' : 'staff';
 
@@ -267,16 +266,19 @@ app.post('/login', (req, res) => {
             res.status(401).send("Invalid username or password.");
         } else {
             const user = results[0];
-
-            // Assuming passwords are stored as plain text
             if (password === user.password) {
-                res.status(200).json({ message: "Login successful!" });
+                res.status(200).json({
+                    message: "Login successful!",
+                    name: user.firstname,
+                    image: user.image ? Buffer.from(user.image).toString('base64') : null
+                });
             } else {
                 res.status(401).send("Invalid username or password.");
             }
         }
     });
 });
+
 
 // Start the server
 app.listen(3001, () => {

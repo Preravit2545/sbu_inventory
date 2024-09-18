@@ -2,10 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 
 interface SideNavProps {
   userType: 'staff' | 'teacher' | 'admin' | null;
-  onLogout: () => void; // Add a logout function prop
+  userName: string;
+  userImage: string | null;
+  onLogout: () => void;
 }
 
-function SideNav({ userType, onLogout }: SideNavProps) {
+function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
   const navigate = useNavigate();
 
   if (!userType) return null;
@@ -20,10 +22,25 @@ function SideNav({ userType, onLogout }: SideNavProps) {
       <aside className="main-sidebar sidebar-dark-primary elevation-4" style={{ position: 'fixed' }}>
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
-          <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
-          <span className="brand-text font-weight-light">SBU</span>
+          {/* Image User */}
+          {userImage ? (
+            <img
+              src={`data:image/jpeg;base64,${userImage}`}
+              alt="User"
+              className="brand-image img-circle elevation-3"
+              style={{ opacity: '.8' }}
+            />
+          ) : (
+            <img
+              src="dist/img/AdminLTELogo.png"
+              alt="AdminLTE Logo"
+              className="brand-image img-circle elevation-3"
+              style={{ opacity: '.8' }}
+            />
+          )}
+          {/* name */}
+          <span className="brand-text font-weight-light">{userName}</span>
         </Link>
-
         {/* Sidebar */}
         <div className="sidebar">
           <nav className="mt-2">

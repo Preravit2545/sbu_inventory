@@ -18,15 +18,21 @@ function App() {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userType, setUserType] = useState<'staff' | 'teacher' | 'admin' | null>('staff');
+  const [userName, setUserName] = useState<string>('');
+  const [userImage, setUserImage] = useState<string | null>(null);
 
-  const handleLogin = (userType: 'staff' | 'teacher' | 'admin') => {
+  const handleLogin = (userType: 'staff' | 'teacher' | 'admin', name: string, image: string | null) => {
     setIsLoggedIn(true);
     setUserType(userType); // Set userType after login
+    setUserName(name); // Set user's real name
+    setUserImage(image); // Set user's image
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserType(null); // Reset userType on logout
+    setUserName(''); // Reset user's real name
+    setUserImage(null); // Reset user's image
   };
 
   return (
@@ -94,7 +100,14 @@ function App() {
           />
         </Routes>
       </main>
-      {location.pathname !== '/' && isLoggedIn && <SideNav userType={userType} onLogout={handleLogout} />}
+      {location.pathname !== '/' && isLoggedIn && 
+        <SideNav 
+          userType={userType} 
+          userName={userName} 
+          userImage={userImage} 
+          onLogout={handleLogout} 
+        />
+      }
       {/* <Footer /> */}
     </div>
   );
