@@ -104,9 +104,9 @@ app.post('/addproduct', upload.single('image'), (req, res) => {
 
     const status = qty > 0 ? 1 : 0;
 
-    const sqlInsert = "INSERT INTO products (name, type, qty, image, status) VALUES (?, ?, ?, ?, ?)";
+    const sqlInsert = "INSERT INTO products (name, type, qty, image, status, remain) VALUES (?, ?, ?, ?, ?, ?)";
 
-    db.query(sqlInsert, [name, type, qty, image, status], (err, result) => {
+    db.query(sqlInsert, [name, type, qty, image, status, qty], (err, result) => {
         if (err) {
             console.error("Error inserting product:", err);
             res.status(500).send("An error occurred while inserting the product.");

@@ -203,8 +203,8 @@ function ProductManagement() {
                                                 value={type}
                                                 onChange={(e) => setType(e.target.value)}
                                             >
-                                                <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
-                                                <option value="อาจารย์">อาจารย์</option>
+                                                <option value="เครื่องใช้สำนักงาน">เครื่องใช้สำนักงาน</option>
+                                                <option value="อุปกรณ์ไอที">อุปกรณ์ไอที</option>
                                             </select>
                                         </div>
 
