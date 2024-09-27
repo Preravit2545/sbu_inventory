@@ -46,10 +46,10 @@ function UserManagement() {
 
 
 
-    const getTeachers = () => {
-        axios.get('http://localhost:3001/user?position=teacher').then((response) => {
+    const getemployees = () => {
+        axios.get('http://localhost:3001/user?position=employee').then((response) => {
             setUserList(response.data);
-            setSelectedButton('teacher'); // Update selected button
+            setSelectedButton('employee'); // Update selected button
         });
     }
 
@@ -72,8 +72,9 @@ function UserManagement() {
     }, [position]);
 
     const deleteUser = (id: number, role: string) => {
-        if (window.confirm(`Are you sure you want to delete this ${role === 'staff' ? 'staff member' : 'teacher'}?`)) {
-            const endpoint = role === 'staff' ? `staff` : `teacher`;
+        if (window.confirm(`Are you sure you want to delete this ${role === 'staff' ? 'staff member' : 'employee'}?`)) {
+            const endpoint = role === 'employee' ? `employee` :
+                role === `staff` ? `staff` : 'staff_stock';
             axios.delete(`http://localhost:3001/delete/${endpoint}/${id}`)
                 .then(response => {
                     alert(response.data);
@@ -182,8 +183,9 @@ function UserManagement() {
                                 onChange={(e) => setPosition(e.target.value)}
                             >
                                 <option value="">--เลือกตำแหน่ง--</option>
-                                <option value="staff">เจ้าหน้าที่</option>
-                                <option value="teacher">อาจารย์</option>
+                                <option value="employee">พนักงาน</option>
+                                <option value="staff">เจ้าหน้าที่ทั่วไป</option>
+                                <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
                             </select>
                         </div>
 
@@ -203,18 +205,28 @@ function UserManagement() {
             <hr />
             <div className="user">
                 <div className="btn-group" role="group">
+
+                    <button
+                        className={`btn ${position === 'employee' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setPosition('employee')}
+                    >
+                        แสดงพนักงาน
+                    </button>
+
                     <button
                         className={`btn ${position === 'staff' ? 'btn-primary' : 'btn-secondary'}`}
                         onClick={() => setPosition('staff')}
                     >
-                        แสดงเจ้าหน้าที่
+                        แสดงเจ้าหน้าที่ทั่วไป
                     </button>
+
                     <button
-                        className={`btn ${position === 'teacher' ? 'btn-primary' : 'btn-secondary'}`}
-                        onClick={() => setPosition('teacher')}
+                        className={`btn ${position === 'staff_stock' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setPosition('staff_stock')}
                     >
-                        แสดงอาจารย์
+                        แสดงเจ้าหน้าที่สต๊อก
                     </button>
+
                 </div>
                 <div style={{ marginTop: '20px' }}>
                     {UserList.map((val, key) => (
@@ -291,7 +303,8 @@ function UserManagement() {
                                             Edit
                                         </button>
                                         <button className="btn btn-danger" onClick={() => deleteUser(val.id, position)}>
-                                            Delete {position === 'staff' ? 'Staff' : 'Teacher'}
+                                            Delete {position === 'staff' ? 'เจ้าหน้าที่ทั่วไป' :
+                                                position === 'employee' ? 'พนักงาน' : 'เจ้าหน้าที่สต๊อก'}
                                         </button>
                                     </>
                                 )}

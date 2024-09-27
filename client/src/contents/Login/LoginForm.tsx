@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./LoginForm.css";
 
 interface LoginFormProps {
-    onLogin: (userType: 'staff' | 'teacher' | 'admin', name: string, image: string | null) => void;
+    onLogin: (userType: 'staff' | 'employee' | 'admin' | 'staff_stock', name: string, image: string | null) => void;
 }
 
 function LoginForm({ onLogin }: LoginFormProps) {
@@ -11,7 +11,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [userType, setUserType] = useState<'staff' | 'teacher' | 'admin'>('staff');
+    const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock'>('staff');
 
     const handleLogin = (event: React.FormEvent) => {
         event.preventDefault();
@@ -19,7 +19,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
         setLoading(true);
 
         if (username.trim() === "" || password.trim() === "") {
-            setError("Please enter both username and password.");
+            setError("กรุณาใส่ข้อมูล Username และ Password.");
             setLoading(false);
             return;
         }
@@ -36,7 +36,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
                 onLogin(userType, name, image); // Pass the user's name and image to onLogin
             })
             .catch(() => {
-                setError("Invalid username or password.");
+                setError("Username หรือ Password ไม่ถูกต้อง");
             })
             .finally(() => {
                 setLoading(false);
@@ -46,7 +46,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
     return (
         <div className="login-container">
             <div className="login-card">
-                <h1 className="login-title">Login</h1>
+                <h1 className="login-title">SBU Inventory</h1>
                 <form onSubmit={handleLogin}>
                     {error && <div className="error-message">{error}</div>}
                     
@@ -82,11 +82,12 @@ function LoginForm({ onLogin }: LoginFormProps) {
                             id="userType"
                             className="form-select"
                             value={userType}
-                            onChange={(e) => setUserType(e.target.value as 'staff' | 'teacher' | 'admin')}
+                            onChange={(e) => setUserType(e.target.value as 'staff' | 'employee' | 'admin' | 'staff_stock')}
                         >
-                            <option value="staff">Staff</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="admin">Admin</option>
+                            <option value="employee">พนักงาน</option>
+                            <option value="staff">เจ้าหน้าที่ทั่วไป</option>
+                            <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
+                            <option value="admin">ผู้ดูแลระบบ</option>
                         </select>
                     </div>
 

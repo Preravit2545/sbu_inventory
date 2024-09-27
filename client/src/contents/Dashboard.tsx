@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 function Dashboard() {
   const [staffCount, setStaffCount] = useState(0);
   const [productCount, setProductCount] = useState(0);
-  const [teacherCount, setTeacherCount] = useState(0);
-  const [orderCount, setOrderCount] = useState(0);
+  const [employeeCount, setemployeeCount] = useState(0);
+  const [request_ProductCount, setRequest_ProductCount] = useState(0);
 
   useEffect(() => {
     // Fetch staff count
@@ -18,15 +18,15 @@ function Dashboard() {
       .then(response => setProductCount(response.data.count))
       .catch(error => console.error("There was an error fetching the product count!", error));
 
-    // Fetch teacher count
-    axios.get('http://localhost:3001/count/teachers')
-      .then(response => setTeacherCount(response.data.count))
-      .catch(error => console.error("There was an error fetching the teacher count!", error));
+    // Fetch employee count
+    axios.get('http://localhost:3001/count/employees')
+      .then(response => setemployeeCount(response.data.count))
+      .catch(error => console.error("There was an error fetching the employee count!", error));
 
     // Fetch order count
-    axios.get('http://localhost:3001/count/orders')
-      .then(response => setOrderCount(response.data.count))
-      .catch(error => console.error("There was an error fetching the order count!", error));
+    axios.get('http://localhost:3001/count/products_request')
+      .then(response => setRequest_ProductCount(response.data.count))
+      .catch(error => console.error("There was an error fetching the product_request count!", error));
   }, []);
 
   return (
@@ -85,21 +85,22 @@ function Dashboard() {
                 {/* small box */}
                 <div className="small-box bg-warning">
                   <div className="inner">
-                    <h3>{teacherCount}</h3>
-                    <p>อาจารย์</p>
+                    <h3>{employeeCount}</h3>
+                    <p>พนักงาน</p>
                   </div>
                   <div className="icon">
                     <i className="ion ion-man" />
                   </div>
                 </div>
               </div>
+
               {/* ./col */}
               <div className="col-lg-3 col-6">
                 {/* small box */}
                 <div className="small-box bg-danger">
                   <div className="inner">
-                    <h3>{orderCount}</h3>
-                    <p>ใบเบิกจ่ายทรัพย์สิน</p>
+                    <h3>{request_ProductCount}</h3>
+                    <p>รอดำเนินการ</p>
                   </div>
                   <div className="icon">
                     <i className="ion ion-pie-graph" />
@@ -107,6 +108,37 @@ function Dashboard() {
                 </div>
               </div>
               {/* ./col */}
+
+              {/* ./col */}
+              <div className="col-lg-3 col-6">
+                {/* small box */}
+                <div className="small-box bg-danger">
+                  <div className="inner">
+                    <h3>{request_ProductCount}</h3>
+                    <p>ได้รับการอนุมัติ</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-pie-graph" />
+                  </div>
+                </div>
+              </div>
+              {/* ./col */}
+
+              {/* ./col */}
+              <div className="col-lg-3 col-6">
+                {/* small box */}
+                <div className="small-box bg-danger">
+                  <div className="inner">
+                    <h3>{request_ProductCount}</h3>
+                    <p>คืนทรัพย์สิน</p>
+                  </div>
+                  <div className="icon">
+                    <i className="ion ion-pie-graph" />
+                  </div>
+                </div>
+              </div>
+              {/* ./col */}
+
             </div>
             {/* /.row */}
           </div>{/* /.container-fluid */}

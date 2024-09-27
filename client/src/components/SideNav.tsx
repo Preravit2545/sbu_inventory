@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 
 interface SideNavProps {
-  userType: 'staff' | 'teacher' | 'admin' | null;
+  userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | null;
   userName: string;
   userImage: string | null;
   onLogout: () => void;
@@ -71,7 +71,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                 </>
               )}
 
-              {userType === 'teacher' && (
+              {userType === 'employee' && (
                 <>
                   <li className="nav-item">
                     <Link to="/Request_Product" className="nav-link">

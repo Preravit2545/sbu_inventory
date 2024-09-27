@@ -6,6 +6,7 @@ const multer = require('multer'); // To handle file uploads
 const path = require('path');
 const helmet = require('helmet');
 
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -47,6 +48,7 @@ app.get('/count/staff', (req, res) => {
     });
 });
 
+//ทรัพย์สิน
 app.get('/count/products', (req, res) => {
     db.query("SELECT COUNT(*) AS count FROM products", (err, result) => {
         if (err) {
@@ -58,10 +60,11 @@ app.get('/count/products', (req, res) => {
     });
 });
 
-app.get('/count/teachers', (req, res) => {
-    db.query("SELECT COUNT(*) AS count FROM teachers", (err, result) => {
+//พนักงาน
+app.get('/count/employees', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM employees", (err, result) => {
         if (err) {
-            console.error("Error fetching teacher count:", err);
+            console.error("Error fetching employee count:", err);
             res.status(500).send({ count: 0 });
         } else {
             res.json(result[0]);
@@ -69,10 +72,11 @@ app.get('/count/teachers', (req, res) => {
     });
 });
 
-app.get('/count/orders', (req, res) => {
-    db.query("SELECT COUNT(*) AS count FROM orders", (err, result) => {
+//คำขอเบิกจ่าย
+app.get('/count/products_request', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM products_request where status = 'รอดำเนินการ'", (err, result) => {
         if (err) {
-            console.error("Error fetching order count:", err);
+            console.error("Error fetching products_request count:", err);
             res.status(500).send({ count: 0 });
         } else {
             res.json(result[0]);
@@ -119,7 +123,8 @@ app.post('/addproduct', upload.single('image'), (req, res) => {
 // Define the /user route with position-based query
 app.get('/user', (req, res) => {
     const { position } = req.query;
-    const table = position === 'teacher' ? 'teachers' : 'staff';
+    const table = position === 'employee' ? 'employees' :
+        position === 'staff_stock' ? 'staff_stock' : 'staff';
 
     db.query(`SELECT * FROM ${table}`, (err, result) => {
         if (err) {
@@ -138,7 +143,8 @@ app.get('/user', (req, res) => {
 // Define the /adduser route
 app.post('/adduser', upload.single('image'), (req, res) => {
     const { username, password, firstname, lastname, phone, position } = req.body;
-    const table = position === 'teacher' ? 'teachers' : 'staff';
+    const table = position === 'employee' ? 'employees' :
+        position === 'staff' ? 'staff' : 'staff_stock';
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
 
     const sqlInsert = `INSERT INTO ${table} (username, password, firstname, lastname, phone, image) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -153,6 +159,7 @@ app.post('/adduser', upload.single('image'), (req, res) => {
     });
 });
 
+// Delete a product
 app.delete('/delete/product/:id', (req, res) => {
     const productId = req.params.id;
 
@@ -180,19 +187,32 @@ app.delete('/delete/staff/:id', (req, res) => {
     });
 });
 
-// Delete a teacher
-app.delete('/delete/teacher/:id', (req, res) => {
-    const teacherId = req.params.id;
-
-    db.query("DELETE FROM teachers WHERE id = ?", [teacherId], (err, result) => {
+// Delete a employee
+app.delete('/delete/employee/:id', (req, res) => {
+    const employeeId = req.params.id;
+    db.query("DELETE FROM employees WHERE id = ?", [employeeId], (err, result) => {
         if (err) {
-            console.error("Error deleting teacher:", err);
-            res.status(500).send("There was an error deleting the teacher.");
+            console.error("Error deleting employee:", err);
+            res.status(500).send("There was an error deleting the employee.");
         } else {
-            res.send("Teacher deleted successfully!");
+            res.send("employee deleted successfully!");
         }
     });
 });
+
+// Delete a staff_stock
+app.delete('/delete/staff_stock/:id', (req, res) => {
+    const staff_stockId = req.params.id;
+    db.query("DELETE FROM staff_stock WHERE id = ?", [staff_stockId], (err, result) => {
+        if (err) {
+            console.error("Error deleting staff_stock:", err);
+            res.status(500).send("There was an error deleting the staff_stock.");
+        } else {
+            res.send("staff_stock deleted successfully!");
+        }
+    });
+});
+
 
 // Define the /updateproduct route
 app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
@@ -227,7 +247,8 @@ app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
 app.put('/updateuser/:id', upload.single('image'), (req, res) => {
     const { id } = req.params;
     const { username, password, firstname, lastname, phone, position } = req.body;
-    const table = position === 'teacher' ? 'teachers' : 'staff';
+    const table = position === 'employee' ? 'employees' :
+        position === 'staff' ? 'staff' : 'staff_stock';
     const image = req.file ? req.file.buffer : null;
 
     let sqlUpdate = `UPDATE ${table} SET username = ?, password = ?, firstname = ?, lastname = ?, phone = ?`;
@@ -255,8 +276,10 @@ app.put('/updateuser/:id', upload.single('image'), (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password, userType } = req.body;
 
-    const table = userType === 'teacher' ? 'teachers' :
-                  userType === 'admin' ? 'admin' : 'staff';
+    const table = userType === 'employee' ? 'employees' :
+        userType === 'admin' ? 'admin' :
+            userType === 'staff_stock' ? 'staff_stock' : 'staff';
+
 
     db.query(`SELECT * FROM ${table} WHERE username = ?`, [username], (err, results) => {
         if (err) {
