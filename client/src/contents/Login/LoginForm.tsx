@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./LoginForm.css";
 
 interface LoginFormProps {
-    onLogin: (userType: 'staff' | 'employee' | 'admin' | 'staff_stock', name: string, image: string | null) => void;
+    onLogin: (userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => void;
 }
 
 function LoginForm({ onLogin }: LoginFormProps) {
@@ -11,7 +11,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock'>('staff');
+    const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager'>('employee');
 
     const handleLogin = (event: React.FormEvent) => {
         event.preventDefault();
@@ -82,11 +82,12 @@ function LoginForm({ onLogin }: LoginFormProps) {
                             id="userType"
                             className="form-select"
                             value={userType}
-                            onChange={(e) => setUserType(e.target.value as 'staff' | 'employee' | 'admin' | 'staff_stock')}
+                            onChange={(e) => setUserType(e.target.value as 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager')}
                         >
                             <option value="employee">พนักงาน</option>
                             <option value="staff">เจ้าหน้าที่ทั่วไป</option>
                             <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
+                            <option value="manager">ผู้จัดการ</option>
                             <option value="admin">ผู้ดูแลระบบ</option>
                         </select>
                     </div>

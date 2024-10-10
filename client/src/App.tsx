@@ -17,11 +17,11 @@ import ProtectedRoute from './contents/ProtectedRoute';
 function App() {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock' | null>('staff');
+  const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager' | null>('staff');
   const [userName, setUserName] = useState<string>('');
   const [userImage, setUserImage] = useState<string | null>(null);
 
-  const handleLogin = (userType: 'staff' | 'employee' | 'admin' | 'staff_stock', name: string, image: string | null) => {
+  const handleLogin = (userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => {
     setIsLoggedIn(true);
     setUserType(userType); // Set userType after login
     setUserName(name); // Set user's real name

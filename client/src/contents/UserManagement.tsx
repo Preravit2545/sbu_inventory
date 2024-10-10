@@ -74,7 +74,8 @@ function UserManagement() {
     const deleteUser = (id: number, role: string) => {
         if (window.confirm(`Are you sure you want to delete this ${role === 'staff' ? 'staff member' : 'employee'}?`)) {
             const endpoint = role === 'employee' ? `employee` :
-                role === `staff` ? `staff` : 'staff_stock';
+                role === `staff` ? `staff` : 
+                role === 'staff_stock' ? 'staff_stock' : 'manager';
             axios.delete(`http://localhost:3001/delete/${endpoint}/${id}`)
                 .then(response => {
                     alert(response.data);
@@ -101,11 +102,13 @@ function UserManagement() {
 
         axios.post('http://localhost:3001/adduser', formData)
             .then(response => {
+                getUsers();
                 alert(response.data);
             })
             .catch(error => {
                 console.error("There was an error adding the user!", error);
             });
+            
     };
 
     return (
@@ -186,6 +189,7 @@ function UserManagement() {
                                 <option value="employee">พนักงาน</option>
                                 <option value="staff">เจ้าหน้าที่ทั่วไป</option>
                                 <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
+                                <option value="manager">ผู้จัดการ</option>
                             </select>
                         </div>
 
@@ -225,6 +229,13 @@ function UserManagement() {
                         onClick={() => setPosition('staff_stock')}
                     >
                         แสดงเจ้าหน้าที่สต๊อก
+                    </button>
+
+                    <button
+                        className={`btn ${position === 'manager' ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setPosition('manager')}
+                    >
+                        แสดงผู้จัดการ
                     </button>
 
                 </div>
@@ -304,7 +315,8 @@ function UserManagement() {
                                         </button>
                                         <button className="btn btn-danger" onClick={() => deleteUser(val.id, position)}>
                                             Delete {position === 'staff' ? 'เจ้าหน้าที่ทั่วไป' :
-                                                position === 'employee' ? 'พนักงาน' : 'เจ้าหน้าที่สต๊อก'}
+                                                position === 'employee' ? 'พนักงาน' :
+                                                position === 'staff_stock' ? 'พนักงานสต๊อก' : 'ผู้จัดการ'}
                                         </button>
                                     </>
                                 )}

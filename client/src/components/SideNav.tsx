@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 
 interface SideNavProps {
-  userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | null;
+  userType: 'staff' | 'employee' | 'admin' | 'staff_stock'| 'manager' | null;
   userName: string;
   userImage: string | null;
   onLogout: () => void;

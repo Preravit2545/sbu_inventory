@@ -124,7 +124,8 @@ app.post('/addproduct', upload.single('image'), (req, res) => {
 app.get('/user', (req, res) => {
     const { position } = req.query;
     const table = position === 'employee' ? 'employees' :
-        position === 'staff_stock' ? 'staff_stock' : 'staff';
+        position === 'staff_stock' ? 'staff_stock' :
+            position === 'staff' ? 'staff' : 'manager';
 
     db.query(`SELECT * FROM ${table}`, (err, result) => {
         if (err) {
@@ -144,7 +145,8 @@ app.get('/user', (req, res) => {
 app.post('/adduser', upload.single('image'), (req, res) => {
     const { username, password, firstname, lastname, phone, position } = req.body;
     const table = position === 'employee' ? 'employees' :
-        position === 'staff' ? 'staff' : 'staff_stock';
+        position === 'staff' ? 'staff' :
+            position === 'staff_stock' ? 'staff_stock' : 'manager';
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
 
     const sqlInsert = `INSERT INTO ${table} (username, password, firstname, lastname, phone, image) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -213,6 +215,18 @@ app.delete('/delete/staff_stock/:id', (req, res) => {
     });
 });
 
+// Delete a manager
+app.delete('/delete/manager/:id', (req, res) => {
+    const managerId = req.params.id;
+    db.query("DELETE FROM manager WHERE id = ?", [managerId], (err, result) => {
+        if (err) {
+            console.error("Error deleting manager:", err);
+            res.status(500).send("There was an error deleting the manager.");
+        } else {
+            res.send("manager deleted successfully!");
+        }
+    });
+});
 
 // Define the /updateproduct route
 app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
@@ -248,7 +262,8 @@ app.put('/updateuser/:id', upload.single('image'), (req, res) => {
     const { id } = req.params;
     const { username, password, firstname, lastname, phone, position } = req.body;
     const table = position === 'employee' ? 'employees' :
-        position === 'staff' ? 'staff' : 'staff_stock';
+        position === 'staff' ? 'staff' :
+            position === 'staff_stock' ? 'staff_stock' : 'manager';
     const image = req.file ? req.file.buffer : null;
 
     let sqlUpdate = `UPDATE ${table} SET username = ?, password = ?, firstname = ?, lastname = ?, phone = ?`;
@@ -278,7 +293,8 @@ app.post('/login', (req, res) => {
 
     const table = userType === 'employee' ? 'employees' :
         userType === 'admin' ? 'admin' :
-            userType === 'staff_stock' ? 'staff_stock' : 'staff';
+            userType === 'staff_stock' ? 'staff_stock' :
+                userType === 'staff' ? 'staff' : 'manager';
 
 
     db.query(`SELECT * FROM ${table} WHERE username = ?`, [username], (err, results) => {
