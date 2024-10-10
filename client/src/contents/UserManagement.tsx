@@ -44,21 +44,15 @@ function UserManagement() {
     };
 
 
-
-
-    const getemployees = () => {
-        axios.get('http://localhost:3001/user?position=employee').then((response) => {
-            setUserList(response.data);
-            setSelectedButton('employee'); // Update selected button
-        });
-    }
-
-    const getStaff = () => {
-        axios.get('http://localhost:3001/user?position=staff').then((response) => {
-            setUserList(response.data);
-            setSelectedButton('staff'); // Update selected button
-        });
-    }
+    const resetForm = () => {
+        setUsername("");
+        setPassword("");
+        setFirstname("");
+        setLastname("");
+        setPosition("");
+        setPhone("");
+        setImage(null);
+    };
 
 
     const getUsers = () => {
@@ -102,8 +96,9 @@ function UserManagement() {
 
         axios.post('http://localhost:3001/adduser', formData)
             .then(response => {
-                getUsers();
                 alert(response.data);
+                getUsers();
+                resetForm();
             })
             .catch(error => {
                 console.error("There was an error adding the user!", error);

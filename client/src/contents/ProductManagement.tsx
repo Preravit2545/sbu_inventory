@@ -18,21 +18,21 @@ function ProductManagement() {
 
     useEffect(() => {
         getProduct();
-      }, []);
+    }, []);
 
     const deleteProduct = (id: number) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
-          axios.delete(`http://localhost:3001/delete/product/${id}`)
-            .then(response => {
-              alert(response.data);
-              setProductList(ProductList.filter(product => product.id !== id));
-            })
-            .catch(error => {
-              console.error("There was an error deleting the product!", error);
-            });
+            axios.delete(`http://localhost:3001/delete/product/${id}`)
+                .then(response => {
+                    alert(response.data);
+                    setProductList(ProductList.filter(product => product.id !== id));
+                })
+                .catch(error => {
+                    console.error("There was an error deleting the product!", error);
+                });
         }
-      };
-    
+    };
+
     const handleAddProduct = (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -84,7 +84,7 @@ function ProductManagement() {
         setStatus(1);
         setEditingProduct(null);
     };
-    
+
     const startEditingProduct = (product: any) => {
         setEditingProduct(product.id);
         setName(product.name);
@@ -138,8 +138,10 @@ function ProductManagement() {
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
                             >
-                                <option value="เครื่องใช้สำนักงาน">เครื่องใช้สำนักงาน</option>
+                                <option value="อุปกรณ์เครื่องใช้สำนักงาน">อุปกรณ์เครื่องใช้สำนักงาน</option>
                                 <option value="อุปกรณ์ไอที">อุปกรณ์ไอที</option>
+                                <option value="อุปกรณ์การศึกษา">อุปกรณ์การศึกษา</option>
+                                <option value="อุปกรณ์กีฬาและสันทนาการ">อุปกรณ์กีฬาและสันทนาการ</option>
                             </select>
                         </div>
                         <div className="mb-3">
@@ -203,8 +205,10 @@ function ProductManagement() {
                                                 value={type}
                                                 onChange={(e) => setType(e.target.value)}
                                             >
-                                                <option value="เครื่องใช้สำนักงาน">เครื่องใช้สำนักงาน</option>
+                                                <option value="อุปกรณ์เครื่องใช้สำนักงาน">อุปกรณ์เครื่องใช้สำนักงาน</option>
                                                 <option value="อุปกรณ์ไอที">อุปกรณ์ไอที</option>
+                                                <option value="อุปกรณ์การศึกษา">อุปกรณ์การศึกษา</option>
+                                                <option value="อุปกรณ์กีฬาและสันทนาการ">อุปกรณ์กีฬาและสันทนาการ</option>
                                             </select>
                                         </div>
 
