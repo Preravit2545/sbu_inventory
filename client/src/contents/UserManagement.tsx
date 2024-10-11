@@ -49,7 +49,6 @@ function UserManagement() {
         setPassword("");
         setFirstname("");
         setLastname("");
-        setPosition("");
         setPhone("");
         setImage(null);
     };

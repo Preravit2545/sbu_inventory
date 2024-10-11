@@ -78,7 +78,6 @@ function ProductManagement() {
 
     const resetForm = () => {
         setName("");
-        setType("");
         setQty(0);
         setImage(null);
         setStatus(1);
