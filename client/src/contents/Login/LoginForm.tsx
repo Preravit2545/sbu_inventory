@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./LoginForm.css";
 
 interface LoginFormProps {
-    onLogin: (userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => void;
+    onLogin: (userID: number, userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => void; // Updated type
 }
 
 function LoginForm({ onLogin }: LoginFormProps) {
@@ -32,8 +32,8 @@ function LoginForm({ onLogin }: LoginFormProps) {
 
         axios.post('http://localhost:3001/login', loginData)
             .then((response) => {
-                const { name, image } = response.data;
-                onLogin(userType, name, image); // Pass the user's name and image to onLogin
+                const { userID, name, image } = response.data; // Added userID
+                onLogin(userID, userType, name, image); // Pass userID to onLogin
             })
             .catch(() => {
                 setError("Username หรือ Password ไม่ถูกต้อง");

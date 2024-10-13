@@ -308,6 +308,7 @@ app.post('/login', (req, res) => {
             if (password === user.password) {
                 res.status(200).json({
                     message: "Login successful!",
+                    userID: user.id,
                     name: user.firstname,
                     image: user.image ? Buffer.from(user.image).toString('base64') : null
                 });
@@ -318,6 +319,19 @@ app.post('/login', (req, res) => {
     });
 });
 
+// POST endpoint for borrowing products
+app.post('/request-product', (req, res) => {
+    const { employee_id, product_id, quantity, reason } = req.body;
+  
+    const query = 'INSERT INTO approval_products (employee_id, product_id, quantity, reason) VALUES (?, ?, ?, ?)';
+    db.query(query, [employee_id, product_id, quantity, reason], (err, results) => {
+      if (err) {
+        console.error('Error inserting request:', err);
+        return res.status(500).json({ message: 'Error processing request' });
+      }
+      return res.status(200).json({ message: 'Request submitted successfully' });
+    });
+  });
 
 // Start the server
 app.listen(3001, () => {

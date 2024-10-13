@@ -18,12 +18,14 @@ import ProtectedRoute from './contents/ProtectedRoute';
 function App() {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userID, setUserID] = useState<number | null>(null); // Add userID state
   const [userType, setUserType] = useState<'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager' | null>('staff');
   const [userName, setUserName] = useState<string>('');
   const [userImage, setUserImage] = useState<string | null>(null);
 
-  const handleLogin = (userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => {
+  const handleLogin = (userID: number, userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager', name: string, image: string | null) => {
     setIsLoggedIn(true);
+    setUserID(userID); // Set userID after login
     setUserType(userType); // Set userType after login
     setUserName(name); // Set user's real name
     setUserImage(image); // Set user's image
@@ -31,6 +33,7 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUserID(null); // Reset userID on logout
     setUserType(null); // Reset userType on logout
     setUserName(''); // Reset user's real name
     setUserImage(null); // Reset user's image
@@ -87,7 +90,7 @@ function App() {
             path="/Request_Product"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Request_Product />
+                <Request_Product userID={userID} /> {/* Pass userID here */}
               </ProtectedRoute>
             }
           />
@@ -101,12 +104,13 @@ function App() {
           />
         </Routes>
       </main>
-      {location.pathname !== '/' && isLoggedIn && 
-        <SideNav 
-          userType={userType} 
-          userName={userName} 
-          userImage={userImage} 
-          onLogout={handleLogout} 
+      {location.pathname !== '/' && isLoggedIn &&
+        <SideNav
+          userID={userID}
+          userType={userType}
+          userName={userName}
+          userImage={userImage}
+          onLogout={handleLogout}
         />
       }
       {/* <Footer /> */}

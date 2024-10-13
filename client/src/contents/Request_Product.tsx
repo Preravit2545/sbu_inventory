@@ -4,12 +4,17 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-function Request_Product() {
+interface RequestProductProps {
+  userID: number | null; // Define the userID prop type
+}
+
+const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
   const [ProductList, setProductList] = useState<any[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
-  const [showRequestModal, setShowRequestModal] = useState(false); // New modal for "เบิก"
-  const [approvalStatus, setApprovalStatus] = useState<string>(""); // State for approval dropdown
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [requestQty, setRequestQty] = useState<number>(0);
+  const [requestReason, setRequestReason] = useState<string>("");
 
   const getProduct = () => {
     axios.get('http://localhost:3001/product').then((response) => {
@@ -30,12 +35,44 @@ function Request_Product() {
   const handleRequestProduct = (product: any) => {
     setSelectedProduct(product);
     setShowRequestModal(true);
+    setRequestQty(0);
+    setRequestReason("");
   };
 
   const handleRequestClose = () => {
     setShowRequestModal(false);
     setSelectedProduct(null);
+    setRequestReason("");
   };
+
+  const handleSubmitRequest = () => {
+  if (requestQty > 0 && requestQty <= selectedProduct.qty) {
+    const employeeId = userID; // Assuming you have userID available in this scope
+    const productId = selectedProduct.id; // Make sure your selectedProduct contains the id
+
+    // Prepare the data to send
+    const requestData = {
+      employee_id: employeeId,
+      product_id: productId,
+      quantity: requestQty,
+      reason: requestReason,
+    };
+
+    axios.post('http://localhost:3001/request-product', requestData)
+      .then(response => {
+        alert(response.data.message);
+        setShowRequestModal(false);
+        // Optionally, you may want to refresh the product list here
+        getProduct();
+      })
+      .catch(error => {
+        alert('Error submitting request: ' + error.message);
+      });
+  } else {
+    alert('จำนวนที่ต้องการเบิกไม่ถูกต้อง');
+  }
+};
+
 
   useEffect(() => {
     getProduct();
@@ -83,7 +120,7 @@ function Request_Product() {
                   <button
                     className="btn btn-info"
                     style={{ margin: '0 5px' }}
-                    onClick={() => handleRequestProduct(val)} // Open the request modal
+                    onClick={() => handleRequestProduct(val)}
                     disabled={val.status === 'หมด'}
                   >
                     เบิก
@@ -132,21 +169,44 @@ function Request_Product() {
       {selectedProduct && (
         <Modal show={showRequestModal} onHide={handleRequestClose}>
           <Modal.Header>
-            <Modal.Title>จัดการสถานะ</Modal.Title>
+            <Modal.Title>การเบิกจ่าย</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {/* Display selected product image and name */}
+            {selectedProduct.image && (
+              <div className="mb-3">
+                <img
+                  src={`data:image/jpeg;base64,${selectedProduct.image}`}
+                  alt={selectedProduct.name}
+                  style={{ width: '100px', height: '100px', marginRight: '10px' }}
+                />
+                <span><strong>ชื่อ:</strong> {selectedProduct.name}</span>
+                <p>
+                <span> <strong>จำนวนที่สามารถเบิกได้:</strong> {selectedProduct.qty}</span>
+                </p>
+              </div>
+            )}
             <Form>
-              <Form.Group controlId="approvalStatus">
-                <Form.Label>สถานะ</Form.Label>
+              <Form.Group controlId="requestQty">
+                <Form.Label>จำนวนที่ต้องการเบิก</Form.Label>
                 <Form.Control
-                  as="select"
-                  value={approvalStatus}
-                  onChange={(e) => setApprovalStatus(e.target.value)}
-                >
-                  <option value="">เลือก...</option>
-                  <option value="อนุมัติ">อนุมัติ</option>
-                  <option value="ไม่อนุมัติ">ไม่อนุมัติ</option>
-                </Form.Control>
+                  type="number"
+                  value={requestQty}
+                  min="1"
+                  max={selectedProduct.qty}
+                  onChange={(e) => setRequestQty(Number(e.target.value))}
+                  placeholder="ระบุจำนวนที่ต้องการเบิก"
+                />
+              </Form.Group>
+              <Form.Group controlId="requestReason">
+                <Form.Label>เหตุผลที่เบิก</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={requestReason}
+                  onChange={(e) => setRequestReason(e.target.value)}
+                  placeholder="ระบุเหตุผลที่ต้องการเบิก"
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -154,8 +214,8 @@ function Request_Product() {
             <Button variant="secondary" onClick={handleRequestClose}>
               ปิด
             </Button>
-            <Button variant="primary" onClick={() => alert(`สถานะ: ${approvalStatus}`)}>
-              บันทึก
+            <Button variant="primary" onClick={handleSubmitRequest}>
+              ส่งคำขอเบิก
             </Button>
           </Modal.Footer>
         </Modal>

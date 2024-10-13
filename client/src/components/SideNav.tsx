@@ -1,13 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 
 interface SideNavProps {
-  userType: 'staff' | 'employee' | 'admin' | 'staff_stock'| 'manager' | null;
+  userID: number | null; // Add userID prop
+  userType: 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager' | null;
   userName: string;
   userImage: string | null;
   onLogout: () => void;
 }
 
-function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
+function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavProps) {
   const navigate = useNavigate();
 
   if (!userType) return null;
@@ -39,7 +40,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
             />
           )}
           {/* name */}
-          <span className="brand-text font-weight-light">{userName}</span>
+          <span className="brand-text font-weight-light">{userID}{userName}</span>
         </Link>
         {/* Sidebar */}
         <div className="sidebar">
@@ -107,7 +108,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
 
               {/* Logout Button */}
               <li className="nav-item">
-                <button className="nav-link" onClick={handleLogout} >
+                <button className="nav-link" onClick={handleLogout}>
                   <i className="nav-icon ion ion-log-out" />
                   <p>Logout</p>
                 </button>
