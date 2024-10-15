@@ -66,7 +66,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                   <li className="nav-item">
                     <Link to="/Approval_Staff_List" className="nav-link">
                       <i className="nav-icon ion ion-checkmark" />
-                      <p>อนุมัติทรัพย์สิน</p>
+                      <p>อนุมัติทรัพย์สิน.</p>
                     </Link>
                   </li>
                 </>
