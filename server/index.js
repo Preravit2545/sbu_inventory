@@ -319,19 +319,56 @@ app.post('/login', (req, res) => {
     });
 });
 
-// POST endpoint for borrowing products
 app.post('/request-product', (req, res) => {
     const { employee_id, product_id, quantity, reason } = req.body;
-  
-    const query = 'INSERT INTO approval_products (employee_id, product_id, quantity, reason) VALUES (?, ?, ?, ?)';
-    db.query(query, [employee_id, product_id, quantity, reason], (err, results) => {
-      if (err) {
-        console.error('Error inserting request:', err);
-        return res.status(500).json({ message: 'Error processing request' });
-      }
-      return res.status(200).json({ message: 'Request submitted successfully' });
+
+    // แทรกคำขอผลิตภัณฑ์
+    const insertQuery = 'INSERT INTO approval_products (employee_id, product_id, quantity, reason) VALUES (?, ?, ?, ?)';
+    db.query(insertQuery, [employee_id, product_id, quantity, reason], (err, results) => {
+        if (err) {
+            console.error('เกิดข้อผิดพลาดในการแทรกคำขอ:', err);
+            return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการประมวลผลคำขอ' });
+        }
+
+        // ตรวจสอบปริมาณสินค้าก่อนการอัปเดต
+        const checkQuery = 'SELECT qty FROM products WHERE id = ?';
+        db.query(checkQuery, [product_id], (err, rows) => {
+            if (err) {
+                console.error('เกิดข้อผิดพลาดในการตรวจสอบปริมาณสินค้า:', err);
+                return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการตรวจสอบปริมาณสินค้า' });
+            }
+
+            const currentQty = rows[0]?.qty;
+
+            if (currentQty === undefined) {
+                return res.status(404).json({ message: 'ไม่พบสินค้าที่ระบุ' });
+            }
+
+            // อัปเดตปริมาณสินค้า, จำนวนที่รอการอนุมัติ และสถานะ
+            const newQty = currentQty - quantity;
+            const status = newQty <= 0 ? 'หมด' : 'มี'; // กำหนดสถานะตามปริมาณใหม่
+
+            const updateQuery = `
+                UPDATE products 
+                SET qty = ?, 
+                    pending = pending + ?, 
+                    status = ?
+                WHERE id = ?
+            `;
+
+            db.query(updateQuery, [newQty, quantity, status, product_id], (err, results) => {
+                if (err) {
+                    console.error('เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า:', err);
+                    return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า' });
+                }
+
+                // การทำงานของทั้งสองคำสั่งสำเร็จ
+                return res.status(200).json({ message: 'ส่งคำขอแล้ว, อัปเดตผลิตภัณฑ์สำเร็จ' });
+            });
+        });
     });
-  });
+});
+
 
 // Start the server
 app.listen(3001, () => {
