@@ -12,8 +12,9 @@ import ProductManagement from './contents/ProductManagement';
 import LoginForm from './contents/Login/LoginForm';
 import Approval_Product from './contents/Approval_Product';
 import Request_Product from './contents/Request_Product';
-import Return_Product from './contents/Return_Product';
+import ApprovalStaffList from './contents/Approval_Staff_List';
 import ProtectedRoute from './contents/ProtectedRoute';
+import ApprovalEmployeeList from './contents/Approval_Employee_List';
 
 function App() {
   const location = useLocation();
@@ -95,10 +96,10 @@ function App() {
             }
           />
           <Route
-            path="/Return_Product"
+            path="/Approval_Staff_List"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Return_Product />
+                <ApprovalStaffList userID={userID} />
               </ProtectedRoute>
             }
           />

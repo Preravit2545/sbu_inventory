@@ -64,7 +64,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/Approval_Product" className="nav-link">
+                    <Link to="/Approval_Staff_List" className="nav-link">
                       <i className="nav-icon ion ion-checkmark" />
                       <p>อนุมัติทรัพย์สิน</p>
                     </Link>
@@ -81,9 +81,9 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/Return_Product" className="nav-link">
+                    <Link to="/Approval_Staff_List" className="nav-link">
                       <i className="nav-icon ion ion-arrow-return-left" />
-                      <p>คืน</p>
+                      <p>ดูรายการขอเบิก</p>
                     </Link>
                   </li>
                 </>

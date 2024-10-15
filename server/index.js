@@ -369,6 +369,47 @@ app.post('/request-product', (req, res) => {
     });
 });
 
+app.get('/approval_staff_list', (req, res) => {
+    const query = `
+      SELECT ap.request_id, ap.product_id, ap.quantity, ap.reason, ap.request_date, ap.status, p.name AS product_name, p.image AS product_image,e.firstname AS emp_firstname,e.lastname AS emp_lastname,e.phone AS emp_phone
+      FROM approval_products ap
+      JOIN products p ON ap.product_id = p.id
+      JOIN employees e ON ap.employee_id = e.id
+      WHERE ap.status = 'รอดำเนินการ'
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error fetching requests.' });
+        }
+
+        // Convert each product image (if it exists) to base64
+        results.forEach(result => {
+            if (result.product_image) {
+                result.product_image = Buffer.from(result.product_image).toString('base64');
+            }
+        });
+
+        res.json(results);
+    });
+});  
+
+app.post('/approve_staff', (req, res) => {
+    const { staffID, request_id, status, staff_remark } = req.body;
+  
+    // SQL statement สำหรับอัปเดตสถานะ
+    const sql = 'UPDATE approval_products SET staff_approved_by = ?, status = ?, staff_remark = ?, staff_approval_date = NOW() WHERE request_id = ?';
+    const values = [staffID, status, staff_remark, request_id];
+  
+    db.query(sql, values, (error, results) => {
+      if (error) {
+        console.error('Error updating request status:', error);
+        return res.status(500).json({ message: 'Error updating request status' });
+      }
+  
+      res.status(200).json({ message: 'Request status updated successfully', results });
+    });
+  });
 
 // Start the server
 app.listen(3001, () => {
