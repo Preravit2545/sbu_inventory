@@ -120,8 +120,8 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
             value={sortOrder}
             onChange={(e) => handleSortByDate(e.target.value)}
           >
-            <option value="desc">ล่าสุดไปเก่าสุด</option>
-            <option value="asc">เก่าสุดไปล่าสุด</option>
+            <option value="desc">ใหม่ไปเก่าที่สุด</option>
+            <option value="asc">เก่าไปใหม่ที่สุด</option>
           </Form.Control>
         </Form.Group>
       </div>

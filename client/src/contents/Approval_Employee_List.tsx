@@ -3,7 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import "./ApprovalemployeeList.css";
+import "./css/ApprovalemployeeList.css";
 
 interface ApprovalemployeeListProps {
   userID: number | null; // Define the userID prop type

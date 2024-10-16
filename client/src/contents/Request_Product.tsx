@@ -3,7 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import "./Request_Product.css";
+import "./css/Request_Product.css";
 
 interface RequestProductProps {
   userID: number | null;

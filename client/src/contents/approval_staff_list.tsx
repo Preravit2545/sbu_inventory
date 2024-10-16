@@ -111,8 +111,8 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
         >
-          <option value="desc">ล่าสุดไปเก่าสุด</option>
-          <option value="asc">เก่าสุดไปล่าสุด</option>
+          <option value="desc">ใหม่ไปเก่าที่สุด</option>
+          <option value="asc">เก่าไปใหม่ที่สุด</option>
         </Form.Control>
       </Form.Group>
 
