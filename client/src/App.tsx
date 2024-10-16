@@ -12,9 +12,10 @@ import ProductManagement from './contents/ProductManagement';
 import LoginForm from './contents/Login/LoginForm';
 import Approval_Product from './contents/Approval_Product';
 import Request_Product from './contents/Request_Product';
-import ApprovalStaffList from './contents/Approval_Staff_List';
 import ProtectedRoute from './contents/ProtectedRoute';
+import ApprovalStaffList from './contents/Approval_Staff_List';
 import ApprovalEmployeeList from './contents/Approval_Employee_List';
+import ApprovalManagerList from './contents/Approval_Manager_List';
 
 function App() {
   const location = useLocation();
@@ -103,7 +104,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/Approval_Manager_List"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <ApprovalManagerList userID={userID} />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
+        
       </main>
       {location.pathname !== '/' && isLoggedIn &&
         <SideNav

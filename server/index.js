@@ -392,24 +392,124 @@ app.get('/approval_staff_list', (req, res) => {
 
         res.json(results);
     });
-});  
+});
+
+app.get('/approval_manager_list', (req, res) => {
+    const query = `
+      SELECT ap.request_id, ap.product_id, ap.quantity, ap.reason, ap.staff_remark, ap.request_date, ap.status, p.name AS product_name, p.image AS product_image,e.firstname AS emp_firstname,e.lastname AS emp_lastname,e.phone AS emp_phone, s.firstname AS staff_firstname, s.lastname AS staff_lastname
+      FROM approval_products ap
+      JOIN products p ON ap.product_id = p.id
+      JOIN employees e ON ap.employee_id = e.id
+      JOIN staff s ON ap.staff_approved_by = s.id
+      WHERE ap.status = 'ได้รับการอนุมัติจากเจ้าหน้าที่'
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error fetching requests.' });
+        }
+
+        // Convert each product image (if it exists) to base64
+        results.forEach(result => {
+            if (result.product_image) {
+                result.product_image = Buffer.from(result.product_image).toString('base64');
+            }
+        });
+
+        res.json(results);
+    });
+});
 
 app.post('/approve_staff', (req, res) => {
-    const { staffID, request_id, status, staff_remark } = req.body;
-  
-    // SQL statement สำหรับอัปเดตสถานะ
+    const { staffID, request_id, status, staff_remark, Request_qty, product_id } = req.body;
+
+    // SQL statement to update approval status
     const sql = 'UPDATE approval_products SET staff_approved_by = ?, status = ?, staff_remark = ?, staff_approval_date = NOW() WHERE request_id = ?';
     const values = [staffID, status, staff_remark, request_id];
-  
+
     db.query(sql, values, (error, results) => {
-      if (error) {
-        console.error('Error updating request status:', error);
-        return res.status(500).json({ message: 'Error updating request status' });
-      }
-  
-      res.status(200).json({ message: 'Request status updated successfully', results });
+        if (error) {
+            console.error('Error updating request status:', error);
+            return res.status(500).json({ message: 'Error updating request status' });
+        }
+
+        // If status is rejected, update both pending and qty
+        if (status === 'ถูกปฏิเสธ') {
+            const sql_productupdate = 'UPDATE products SET pending = (pending - ?), qty = (qty + ?) WHERE id = ?';
+            const values_productupdate = [Request_qty, Request_qty, product_id];
+
+            db.query(sql_productupdate, values_productupdate, (error, results) => {
+                if (error) {
+                    console.error('Error updating product status:', error);
+                    return res.status(500).json({ message: 'Error updating product status' });
+                }
+
+                // Check if qty > 0, and if so, update the product status to 'มี'
+                const sql_check_qty = 'UPDATE products SET status = "มี" WHERE id = ? AND qty > 0';
+                db.query(sql_check_qty, [product_id], (error, results) => {
+                    if (error) {
+                        console.error('Error updating product availability status:', error);
+                        return res.status(500).json({ message: 'Error updating product availability status' });
+                    }
+
+                    // Send response after all updates are completed
+                    return res.status(200).json({ message: 'Request and product status updated successfully', results });
+                });
+            });
+        } else {
+            // If status is not rejected, send the response immediately
+            res.status(200).json({ message: 'Request status updated successfully', results });
+        }
     });
-  });
+});
+
+app.post('/approve_manager', (req, res) => {
+    const { managerID, request_id, status, manager_remark, Request_qty, product_id } = req.body;
+
+    // SQL statement to update approval status
+    const sql_approvalupdate = 'UPDATE approval_products SET manager_approved_by = ?, status = ?, manager_remark = ?, manager_approval_date = NOW() WHERE request_id = ?';
+    const values_approvalupdate = [managerID, status, manager_remark, request_id];
+
+    db.query(sql_approvalupdate, values_approvalupdate, (error, results) => {
+        if (error) {
+            console.error('Error updating request status:', error);
+            return res.status(500).json({ message: 'Error updating request status' });
+        }
+
+        let sql_productupdate;
+        let values_productupdate;
+
+        // Check if the status is rejected
+        if (status === 'ถูกปฏิเสธ') {
+            // Update both pending and qty
+            sql_productupdate = 'UPDATE products SET pending = (pending - ?), qty = (qty + ?) WHERE id = ?';
+            values_productupdate = [Request_qty, Request_qty, product_id];
+        } else {
+            // Only update pending
+            sql_productupdate = 'UPDATE products SET pending = (pending - ?) WHERE id = ?';
+            values_productupdate = [Request_qty, product_id];
+        }
+
+        db.query(sql_productupdate, values_productupdate, (error, results) => {
+            if (error) {
+                console.error('Error updating product status:', error);
+                return res.status(500).json({ message: 'Error updating product status' });
+            }
+
+            // Check if qty is greater than 0 to update product status to 'มี'
+            const sql_check_qty = 'UPDATE products SET status = "มี" WHERE id = ? AND qty > 0';
+            db.query(sql_check_qty, [product_id], (error, results) => {
+                if (error) {
+                    console.error('Error updating product availability status:', error);
+                    return res.status(500).json({ message: 'Error updating product availability status' });
+                }
+
+                // Send response after all queries are successful
+                res.status(200).json({ message: 'Request and product status updated successfully', results });
+            });
+        });
+    });
+});
 
 // Start the server
 app.listen(3001, () => {

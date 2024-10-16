@@ -106,6 +106,17 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </>
               )}
 
+              {userType === 'manager' && (
+                <>
+                  <li className="nav-item">
+                    <Link to="/Approval_Manager_List" className="nav-link">
+                      <i className="nav-icon ion ion-bag" />
+                      <p>ดูรายการขอเบิกผู้จัดการ</p>
+                    </Link>
+                  </li>
+                </>
+              )}
+
               {/* Logout Button */}
               <li className="nav-item">
                 <button className="nav-link" onClick={handleLogout}>

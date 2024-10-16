@@ -4,20 +4,20 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-interface ApprovalStaffListProps {
+interface ApprovalmanagerListProps {
   userID: number | null; // Define the userID prop type
 }
 
-const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
+const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => {
   const [requestList, setRequestList] = useState<any[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [approvalStatus, setApprovalStatus] = useState<string>(''); // สำหรับติดตามสถานะที่เลือก
-  const [staffRemark, setStaffRemark] = useState<string>(''); // สำหรับเก็บข้อคิดเห็นของเจ้าหน้าที่
+  const [managerRemark, setmanagerRemark] = useState<string>(''); // สำหรับเก็บข้อคิดเห็นของเจ้าหน้าที่
 
   const getApprovalRequests = () => {
-    axios.get('http://localhost:3001/approval_staff_list')
+    axios.get('http://localhost:3001/approval_manager_list')
       .then((response) => {
         setRequestList(response.data);
       })
@@ -44,20 +44,20 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
   const handleCloseApprovalModal = () => {
     setShowApprovalModal(false);
     setApprovalStatus(''); // รีเซ็ตค่า
-    setStaffRemark(''); // รีเซ็ตค่าข้อคิดเห็น
+    setmanagerRemark(''); // รีเซ็ตค่าข้อคิดเห็น
   };
 
   const handleSubmitApproval = () => {
-    const staffID = userID;
+    const managerID = userID;
     if (!approvalStatus) return;
 
-    axios.post(`http://localhost:3001/approve_staff`, {
-      staffID: staffID,
+    axios.post(`http://localhost:3001/approve_manager`, {
+      managerID: managerID,
       product_id: selectedRequest.product_id,
       Request_qty: selectedRequest.quantity,
       request_id: selectedRequest.request_id,
-      status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากเจ้าหน้าที่' : 'ถูกปฏิเสธ',
-      staff_remark: staffRemark // ส่งข้อคิดเห็นของเจ้าหน้าที่ไปด้วย
+      status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากผู้จัดการ' : 'ถูกปฏิเสธ',
+      manager_remark: managerRemark // ส่งข้อคิดเห็นของเจ้าหน้าที่ไปด้วย
     })
     .then((response) => {
       console.log("Update status success:", response.data);
@@ -142,6 +142,8 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
             <p><strong>ผู้ที่ขอเบิก:</strong> {selectedRequest.emp_firstname} {selectedRequest.emp_lastname}</p>
             <p><strong>เบอร์โทรผู้ที่ขอเบิก:</strong> {selectedRequest.emp_phone}</p>
             <p><strong>เหตุผลที่เบิก:</strong> {selectedRequest.reason}</p>
+            <p><strong>เจ้าหน้าที่ที่อนุมัติ:</strong> {selectedRequest.staff_firstname} {selectedRequest.staff_lastname}</p>
+            <p><strong>ข้อคิดเห็นจากเจ้าหน้าที่:</strong> {selectedRequest.staff_remark}</p>
             <p><strong>วันที่ร้องขอ:</strong> {new Date(selectedRequest.request_date).toLocaleDateString()}</p>
             <p><strong>สถานะ:</strong> {selectedRequest.status}</p>
             {selectedRequest.product_image && (
@@ -178,13 +180,13 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
               <option value="reject">ไม่อนุมัติ</option>
             </Form.Control>
           </Form.Group>
-          <Form.Group controlId="staffRemark">
-            <Form.Label>ข้อคิดเห็นจากเจ้าหน้าที่</Form.Label>
+          <Form.Group controlId="managerRemark">
+            <Form.Label>ข้อคิดเห็นจากผู้จัดการ</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
-              value={staffRemark}
-              onChange={(e) => setStaffRemark(e.target.value)}
+              value={managerRemark}
+              onChange={(e) => setmanagerRemark(e.target.value)}
               placeholder="ใส่ข้อคิดเห็น..."
             />
           </Form.Group>
@@ -202,4 +204,4 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
   );
 }
 
-export default ApprovalStaffList;
+export default ApprovalManagerList;
