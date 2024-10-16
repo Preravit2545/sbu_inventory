@@ -5,21 +5,25 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 interface ApprovalmanagerListProps {
-  userID: number | null; // Define the userID prop type
+  userID: number | null;
 }
 
 const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => {
   const [requestList, setRequestList] = useState<any[]>([]);
+  const [filteredRequestList, setFilteredRequestList] = useState<any[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
-  const [approvalStatus, setApprovalStatus] = useState<string>(''); // สำหรับติดตามสถานะที่เลือก
-  const [managerRemark, setmanagerRemark] = useState<string>(''); // สำหรับเก็บข้อคิดเห็นของเจ้าหน้าที่
+  const [approvalStatus, setApprovalStatus] = useState<string>('');
+  const [managerRemark, setmanagerRemark] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>('desc');
 
   const getApprovalRequests = () => {
     axios.get('http://localhost:3001/approval_manager_list')
       .then((response) => {
         setRequestList(response.data);
+        setFilteredRequestList(response.data);
       })
       .catch((error) => {
         console.error('Error fetching approval requests:', error);
@@ -38,13 +42,13 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
 
   const handleApprovalProduct = (request: any) => {
     setSelectedRequest(request);
-    setShowApprovalModal(true); // เปิด modal ของการจัดการอนุมัติ
+    setShowApprovalModal(true);
   };
 
   const handleCloseApprovalModal = () => {
     setShowApprovalModal(false);
-    setApprovalStatus(''); // รีเซ็ตค่า
-    setmanagerRemark(''); // รีเซ็ตค่าข้อคิดเห็น
+    setApprovalStatus('');
+    setmanagerRemark('');
   };
 
   const handleSubmitApproval = () => {
@@ -57,17 +61,35 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       Request_qty: selectedRequest.quantity,
       request_id: selectedRequest.request_id,
       status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากผู้จัดการ' : 'ถูกปฏิเสธ',
-      manager_remark: managerRemark // ส่งข้อคิดเห็นของเจ้าหน้าที่ไปด้วย
+      manager_remark: managerRemark
     })
     .then((response) => {
-      console.log("Update status success:", response.data);
-      getApprovalRequests(); // รีเฟรชรายการหลังการอัปเดต
+      getApprovalRequests();
     })
     .catch((error) => {
       console.error("Error updating status:", error);
     });
 
-    handleCloseApprovalModal(); // ปิด modal หลังจากส่งข้อมูล
+    handleCloseApprovalModal();
+  };
+
+  // Search and Filter logic
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = requestList.filter((request) =>
+      request.product_name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredRequestList(filtered);
+  };
+
+  const handleSortByDate = (order: string) => {
+    const sorted = [...filteredRequestList].sort((a, b) => {
+      const dateA = new Date(a.request_date);
+      const dateB = new Date(b.request_date);
+      return order === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+    });
+    setFilteredRequestList(sorted);
+    setSortOrder(order);
   };
 
   useEffect(() => {
@@ -77,6 +99,34 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
   return (
     <div className="content-wrapper">
       <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติ</h3>
+
+      {/* Search and Filter Section */}
+      <div className="search-filter-container">
+        <Form.Group controlId="searchQuery">
+          <Form.Label>ค้นหา</Form.Label>
+          <Form.Control
+            type="text"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            placeholder="กรอกชื่อทรัพย์สิน..."
+          />
+        </Form.Group>
+
+        {/* Sort Dropdown */}
+        <Form.Group controlId="sortOrder">
+          <Form.Label>เรียงลำดับตามวันที่ร้องขอ</Form.Label>
+          <Form.Control
+            as="select"
+            value={sortOrder}
+            onChange={(e) => handleSortByDate(e.target.value)}
+          >
+            <option value="desc">ล่าสุดไปเก่าสุด</option>
+            <option value="asc">เก่าสุดไปล่าสุด</option>
+          </Form.Control>
+        </Form.Group>
+      </div>
+
+      {/* Request List Table */}
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -84,14 +134,13 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
             <th>รูป</th>
             <th>ชื่อทรัพย์สิน</th>
             <th>จำนวน</th>
-            <th>เหตุผล</th>
             <th>วันที่ร้องขอ</th>
             <th>สถานะ</th>
             <th>การจัดการ</th>
           </tr>
         </thead>
         <tbody>
-          {requestList.map((val, key) => (
+          {filteredRequestList.map((val, key) => (
             <tr key={key}>
               <td>{val.request_id}</td>
               <td>
@@ -107,7 +156,6 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
               </td>
               <td>{val.product_name}</td>
               <td>{val.quantity}</td>
-              <td>{val.reason}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
               <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : 'green' }}>
                 {val.status}
@@ -136,7 +184,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
             <Modal.Title>รายละเอียดคำขอ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p><strong>รหัสการร้องขอ:</strong> {selectedRequest.request_id}</p>
+          <p><strong>รหัสการร้องขอ:</strong>{selectedRequest.request_id}</p>
             <p><strong>ชื่อทรัพย์สิน:</strong> {selectedRequest.product_name}</p>
             <p><strong>จำนวน:</strong> {selectedRequest.quantity}</p>
             <p><strong>ผู้ที่ขอเบิก:</strong> {selectedRequest.emp_firstname} {selectedRequest.emp_lastname}</p>
@@ -202,6 +250,6 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       </Modal>
     </div>
   );
-}
+};
 
 export default ApprovalManagerList;
