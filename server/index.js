@@ -381,6 +381,7 @@ app.get('/approval_employee_list', (req, res) => {
     JOIN products p ON ap.product_id = p.id
     JOIN employees e ON ap.employee_id = e.id
     WHERE ap.employee_id = ?
+    ORDER BY ap.request_date DESC;
   `;
 
     db.query(query, [employee_id], (err, results) => {

@@ -18,21 +18,22 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
   const [selectedStatus, setSelectedStatus] = useState<string>("ทั้งหมด");
   const [showSearch, setShowSearch] = useState(true);
   const [showFilters, setShowFilters] = useState(true);
+  const [sortOrder, setSortOrder] = useState<string>('asc'); // State for sort order
 
-  const getApprovalRequests = () => {
-    if (!userID) return; // Ensure userID is available
+    const getApprovalRequests = () => {
+      if (!userID) return; // Ensure userID is available
 
-    axios.get(`http://localhost:3001/approval_employee_list`, {
-      params: { employee_id: userID } // This sends the userID as a query parameter
-    })
-      .then((response) => {
-        setRequestList(response.data);
-        setFilteredRequestList(response.data); // Initialize the filtered list
+      axios.get(`http://localhost:3001/approval_employee_list`, {
+        params: { employee_id: userID } // This sends the userID as a query parameter
       })
-      .catch((error) => {
-        console.error('Error fetching approval requests:', error);
-      });
-  };
+        .then((response) => {
+          setRequestList(response.data);
+          setFilteredRequestList(response.data); // Initialize the filtered list
+        })
+        .catch((error) => {
+          console.error('Error fetching approval requests:', error);
+        });
+    };
 
   const ViewingRequest = (request: any) => {
     setSelectedRequest(request);
@@ -51,22 +52,37 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = requestList.filter((request) =>
-      request.product_name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredRequestList(filtered);
   };
 
   const handleFilterByStatus = (status: string) => {
     setSelectedStatus(status);
+  };
+
+  // Sort and filter requests whenever the related states change
+  useEffect(() => {
     let filtered = requestList;
 
-    if (status !== "ทั้งหมด") {
-      filtered = filtered.filter((request) => request.status === status);
+    // Filter by status
+    if (selectedStatus !== "ทั้งหมด") {
+      filtered = filtered.filter((request) => request.status === selectedStatus);
     }
 
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter((request) =>
+        request.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort by request date based on sort order
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.request_date).getTime();
+      const dateB = new Date(b.request_date).getTime();
+      return sortOrder === 'desc' ? dateA - dateB : dateB - dateA; // Sort accordingly
+    });
+
     setFilteredRequestList(filtered);
-  };
+  }, [requestList, searchQuery, selectedStatus, sortOrder]);
 
   useEffect(() => {
     getApprovalRequests();
@@ -96,23 +112,36 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
         )}
 
         {showFilters && (
-          <Form.Group controlId="statusFilter">
-            <Form.Label>สถานะ</Form.Label>
-            <Form.Control
-              as="select"
-              value={selectedStatus}
-              onChange={(e) => handleFilterByStatus(e.target.value)}
-            >
-              <option value="ทั้งหมด">ทั้งหมด</option>
-              <option value="รอดำเนินการ">รอดำเนินการ</option>
-              <option value="ได้รับการอนุมัติจากเจ้าหน้าที่">ได้รับการอนุมัติจากเจ้าหน้าที่</option>
-              <option value="ได้รับการอนุมัติจากผู้จัดการ">ได้รับการอนุมัติจากผู้จัดการ</option>
-              <option value="ถูกปฏิเสธ">ถูกปฏิเสธ</option>
-            </Form.Control>
-          </Form.Group>
-               )}
+          <div className="filter-groups">
+            <Form.Group controlId="statusFilter">
+              <Form.Label>สถานะ</Form.Label>
+              <Form.Control
+                as="select"
+                value={selectedStatus}
+                onChange={(e) => handleFilterByStatus(e.target.value)}
+              >
+                <option value="ทั้งหมด">ทั้งหมด</option>
+                <option value="รอดำเนินการ">รอดำเนินการ</option>
+                <option value="ได้รับการอนุมัติจากเจ้าหน้าที่">ได้รับการอนุมัติจากเจ้าหน้าที่</option>
+                <option value="ได้รับการอนุมัติจากผู้จัดการ">ได้รับการอนุมัติจากผู้จัดการ</option>
+                <option value="ถูกปฏิเสธ">ถูกปฏิเสธ</option>
+              </Form.Control>
+            </Form.Group>
+            {/* Sort Dropdown */}
+            <Form.Group controlId="sortOrder">
+              <Form.Label>เรียงลำดับตามวันที่ร้องขอ</Form.Label>
+              <Form.Control
+                as="select"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="desc">ใหม่ไปเก่าที่สุด</option>
+                <option value="asc">เก่าไปใหม่ที่สุด</option>
+              </Form.Control>
+            </Form.Group>
+          </div>
+        )}
       </div>
-
 
       {/* Request List Table */}
       <table className="table table-bordered">
