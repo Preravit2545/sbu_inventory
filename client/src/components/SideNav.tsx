@@ -54,44 +54,39 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </Link>
               </li>
 
-              {/* เจ้าหน้าที่ */}
-              {userType === 'staff' && (
-                <>
-                  <li className="nav-item">
-                    <Link to="/ProductManagement" className="nav-link">
-                      <i className="nav-icon ion ion-clipboard" />
-                      <p>จัดการข้อมูลทรัพย์สิน</p>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/Approval_Staff_List" className="nav-link">
-                      <i className="nav-icon ion ion-checkmark" />
-                      <p>อนุมัติทรัพย์สิน</p>
-                    </Link>
-                  </li>
-                </>
-              )}
 
-              {/* พนักงาน */}
+              {/* พนักงาน Employee*/}
               {userType === 'employee' && (
                 <>
                   <li className="nav-item">
                     <Link to="/Request_Product" className="nav-link">
-                      <i className="nav-icon ion ion-bag" />
+                      <i className="nav-icon ion ion-android-add-circle" />
                       <p>เบิกทรัพย์สิน</p>
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link to="/Approval_Employee_List" className="nav-link">
-                      <i className="nav-icon ion ion-arrow-return-left" />
-                      <p>คำขอเบิกของคุณ</p>  
+                      <i className="nav-icon ion ion-android-clipboard" />
+                      <p>รายการคำขอเบิกของคุณ</p>
                     </Link>
                   </li>
                 </>
               )}
 
-              {/* ผู้ดูแลระบบ */}
-              {userType === 'admin' && (
+              {/* เจ้าหน้าที่ Staff*/}
+              {userType === 'staff' && (
+                <>
+                  <li className="nav-item">
+                    <Link to="/Approval_Staff_List" className="nav-link">
+                      <i className="nav-icon ion ion-checkmark" />
+                      <p>{"อนุมัติทรัพย์สิน (Staff)"}</p>
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {/* เจ้าหน้าที่สต๊อก Staff_stock*/}
+              {userType === 'staff_stock' && (
                 <>
                   <li className="nav-item">
                     <Link to="/ProductManagement" className="nav-link">
@@ -99,22 +94,28 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                       <p>จัดการข้อมูลทรัพย์สิน</p>
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to="/UserManagement" className="nav-link">
-                      <i className="nav-icon ion ion-person-add" />
-                      <p>จัดการข้อมูลผู้ใช้</p>
-                    </Link>
-                  </li>
                 </>
               )}
 
-              {/* ผู้จัดการ */}
+              {/* ผู้จัดการ Manager */}
               {userType === 'manager' && (
                 <>
                   <li className="nav-item">
                     <Link to="/Approval_Manager_List" className="nav-link">
                       <i className="nav-icon ion ion-bag" />
-                      <p>ดูรายการขอเบิกผู้จัดการ</p>
+                      <p>{"อนุมัติทรัพย์สิน (Manager)"}</p>
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {/* ผู้ดูแลระบบ Admin */}
+              {userType === 'admin' &&  (
+                <>
+                  <li className="nav-item">
+                    <Link to="/UserManagement" className="nav-link">
+                      <i className="nav-icon ion ion-person-add" />
+                      <p>จัดการข้อมูลผู้ใช้</p>
                     </Link>
                   </li>
                 </>
