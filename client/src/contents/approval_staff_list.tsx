@@ -15,6 +15,8 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [approvalStatus, setApprovalStatus] = useState<string>(''); // สำหรับติดตามสถานะที่เลือก
   const [staffRemark, setStaffRemark] = useState<string>(''); // สำหรับเก็บข้อคิดเห็นของเจ้าหน้าที่
+  const [searchQuery, setSearchQuery] = useState<string>(''); // สำหรับเก็บข้อมูลการค้นหา
+  const [sortOrder, setSortOrder] = useState<string>('desc'); // State for sort order
 
   const getApprovalRequests = () => {
     axios.get('http://localhost:3001/approval_staff_list')
@@ -59,13 +61,13 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
       status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากเจ้าหน้าที่' : 'ถูกปฏิเสธ',
       staff_remark: staffRemark // ส่งข้อคิดเห็นของเจ้าหน้าที่ไปด้วย
     })
-    .then((response) => {
-      console.log("Update status success:", response.data);
-      getApprovalRequests(); // รีเฟรชรายการหลังการอัปเดต
-    })
-    .catch((error) => {
-      console.error("Error updating status:", error);
-    });
+      .then((response) => {
+        console.log("Update status success:", response.data);
+        getApprovalRequests(); // รีเฟรชรายการหลังการอัปเดต
+      })
+      .catch((error) => {
+        console.error("Error updating status:", error);
+      });
 
     handleCloseApprovalModal(); // ปิด modal หลังจากส่งข้อมูล
   };
@@ -74,9 +76,46 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
     getApprovalRequests();
   }, []);
 
+  // Filtered request list based on search query
+  const filteredRequests = requestList.filter(request =>
+    request.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.request_id.toString().includes(searchQuery)
+  );
+
+  // Sort filtered requests based on sort order
+  const sortedRequests = filteredRequests.sort((a, b) => {
+    const dateA = new Date(a.request_date).getTime();
+    const dateB = new Date(b.request_date).getTime();
+    return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+  });
+
   return (
     <div className="content-wrapper">
       <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติ</h3>
+
+      {/* Search Input */}
+      <Form.Group controlId="searchQuery">
+        <Form.Control
+          type="text"
+          placeholder="ค้นหาตามชื่อทรัพย์สินหรือรหัสการร้องขอ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </Form.Group>
+
+      {/* Sort Dropdown */}
+      <Form.Group controlId="sortOrder">
+        <Form.Label>เรียงลำดับตามวันที่ร้องขอ</Form.Label>
+        <Form.Control
+          as="select"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+        >
+          <option value="desc">ล่าสุดไปเก่าสุด</option>
+          <option value="asc">เก่าสุดไปล่าสุด</option>
+        </Form.Control>
+      </Form.Group>
+
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -84,14 +123,13 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
             <th>รูป</th>
             <th>ชื่อทรัพย์สิน</th>
             <th>จำนวน</th>
-            <th>เหตุผล</th>
             <th>วันที่ร้องขอ</th>
             <th>สถานะ</th>
             <th>การจัดการ</th>
           </tr>
         </thead>
         <tbody>
-          {requestList.map((val, key) => (
+          {sortedRequests.length > 0 ? sortedRequests.map((val, key) => (
             <tr key={key}>
               <td>{val.request_id}</td>
               <td>
@@ -99,7 +137,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
                   <img
                     src={`data:image/jpeg;base64,${val.product_image}`}
                     alt={val.product_name}
-                    style={{ width: '50px', height: '50px' }}
+                    style={{ width: '100px', height: '100px' }}
                   />
                 ) : (
                   <span>No Image</span>
@@ -107,14 +145,13 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
               </td>
               <td>{val.product_name}</td>
               <td>{val.quantity}</td>
-              <td>{val.reason}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
               <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : 'green' }}>
                 {val.status}
               </td>
               <td>
                 <button className="btn btn-success" onClick={() => ViewingRequest(val)}>
-                  ดู
+                  ดูรายละเอียดคำขอ
                 </button>
                 <button
                   className="btn btn-info"
@@ -125,7 +162,11 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
                 </button>
               </td>
             </tr>
-          ))}
+          )) : (
+            <tr>
+              <td colSpan={7} className="text-center">ไม่พบข้อมูลที่ค้นหา</td>
+            </tr>
+          )}
         </tbody>
       </table>
 

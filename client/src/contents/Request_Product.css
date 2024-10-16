@@ -1,0 +1,49 @@
+.content-wrapper {
+  padding: 20px;
+}
+
+.request-product-app {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-filter-container {
+  margin-bottom: 20px;
+  border: 1px solid #dee2e6;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+.filter-groups {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-image,
+.modal-product-image {
+  width: 100px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.text-success {
+  color: green;
+}
+
+.text-danger {
+  color: red;
+}

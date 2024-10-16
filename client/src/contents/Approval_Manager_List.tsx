@@ -99,7 +99,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
                   <img
                     src={`data:image/jpeg;base64,${val.product_image}`}
                     alt={val.product_name}
-                    style={{ width: '50px', height: '50px' }}
+                    style={{ width: '100px', height: '100px' }}
                   />
                 ) : (
                   <span>No Image</span>
@@ -114,7 +114,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
               </td>
               <td>
                 <button className="btn btn-success" onClick={() => ViewingRequest(val)}>
-                  ดู
+                  ดูรายละเอียดคำขอ
                 </button>
                 <button
                   className="btn btn-info"

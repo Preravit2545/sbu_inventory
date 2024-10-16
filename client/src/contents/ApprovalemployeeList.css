@@ -1,0 +1,20 @@
+.content-wrapper {
+    padding: 20px;
+  }
+  
+  .search-filter-container {
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #ffffff;
+  }
+  
+  .table {
+    margin-top: 20px;
+  }
+  
+  .table img {
+    border-radius: 5px;
+  }
+  

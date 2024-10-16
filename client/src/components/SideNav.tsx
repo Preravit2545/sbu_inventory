@@ -54,7 +54,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </Link>
               </li>
 
-              {/* Conditionally render based on userType */}
+              {/* เจ้าหน้าที่ */}
               {userType === 'staff' && (
                 <>
                   <li className="nav-item">
@@ -72,6 +72,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </>
               )}
 
+              {/* พนักงาน */}
               {userType === 'employee' && (
                 <>
                   <li className="nav-item">
@@ -81,14 +82,15 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/Approval_Staff_List" className="nav-link">
+                    <Link to="/Approval_Employee_List" className="nav-link">
                       <i className="nav-icon ion ion-arrow-return-left" />
-                      <p>ดูรายการขอเบิก</p>
+                      <p>คำขอเบิกของคุณ</p>  
                     </Link>
                   </li>
                 </>
               )}
 
+              {/* ผู้ดูแลระบบ */}
               {userType === 'admin' && (
                 <>
                   <li className="nav-item">
@@ -106,6 +108,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </>
               )}
 
+              {/* ผู้จัดการ */}
               {userType === 'manager' && (
                 <>
                   <li className="nav-item">

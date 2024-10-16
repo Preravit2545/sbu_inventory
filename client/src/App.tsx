@@ -112,6 +112,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/Approval_Employee_List"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <ApprovalEmployeeList userID={userID} />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
         
       </main>

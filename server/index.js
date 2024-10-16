@@ -322,7 +322,7 @@ app.post('/login', (req, res) => {
 app.post('/request-product', (req, res) => {
     const { employee_id, product_id, quantity, reason } = req.body;
 
-    // แทรกคำขอผลิตภัณฑ์
+
     const insertQuery = 'INSERT INTO approval_products (employee_id, product_id, quantity, reason) VALUES (?, ?, ?, ?)';
     db.query(insertQuery, [employee_id, product_id, quantity, reason], (err, results) => {
         if (err) {
@@ -366,6 +366,36 @@ app.post('/request-product', (req, res) => {
                 return res.status(200).json({ message: 'ส่งคำขอแล้ว, อัปเดตผลิตภัณฑ์สำเร็จ' });
             });
         });
+    });
+});
+
+app.get('/approval_employee_list', (req, res) => {
+    const employee_id = req.query.employee_id;
+    const query = `
+    SELECT ap.request_id, ap.product_id, ap.employee_id, ap.quantity, ap.reason, ap.request_date, ap.status, 
+           ap.staff_remark,ap.manager_remark,p.name AS product_name, p.image AS product_image, e.firstname AS emp_firstname, 
+           e.lastname AS emp_lastname, e.phone AS emp_phone, m.firstname AS m_firstname, s.firstname AS staff_firstname
+    FROM approval_products ap
+    LEFT JOIN manager m ON ap.manager_approved_by = m.id
+    LEFT JOIN staff s ON ap.staff_approved_by = s.id
+    JOIN products p ON ap.product_id = p.id
+    JOIN employees e ON ap.employee_id = e.id
+    WHERE ap.employee_id = ?
+  `;
+
+    db.query(query, [employee_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error fetching requests.' });
+        }
+
+        // Convert each product image (if it exists) to base64
+        results.forEach(result => {
+            if (result.product_image) {
+                result.product_image = Buffer.from(result.product_image).toString('base64');
+            }
+        });
+
+        res.json(results); // Send the results to the frontend
     });
 });
 
