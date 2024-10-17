@@ -13,7 +13,7 @@ import LoginForm from './contents/Login/LoginForm';
 import EditUserForm from './contents/EditUserForm';
 import Request_Product from './contents/Request_Product';
 import ProtectedRoute from './contents/ProtectedRoute';
-import ApprovalStaffList from './contents/Approval_Staff_List';
+import ApprovalStaffList from './contents/approval_staff_list';
 import ApprovalEmployeeList from './contents/Approval_Employee_List';
 import ApprovalManagerList from './contents/Approval_Manager_List';
 
