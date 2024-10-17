@@ -8,7 +8,6 @@ interface RequestUserProps {
 
 const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
   const [username, setUsername] = useState('');
-  const [oldPassword, setOldPassword] = useState(''); // Old password
   const [newPassword, setNewPassword] = useState(''); // New password
   const [confirmPassword, setConfirmPassword] = useState(''); // Confirm new password
   const [firstname, setFirstname] = useState('');
@@ -45,7 +44,7 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!username || !oldPassword || !newPassword || !confirmPassword) {
+    if (!username || !newPassword || !confirmPassword) {
       alert('All fields are required');
       return;
     }
@@ -57,7 +56,6 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
 
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('oldPassword', oldPassword); // Add old password
     formData.append('newPassword', newPassword); // Add new password
     formData.append('firstname', firstname);
     formData.append('lastname', lastname);
@@ -103,18 +101,6 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                   value={username}
                   disabled
                   onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-
-              {/* Old Password */}
-              <div className="mb-3">
-                <label htmlFor="oldPassword" className="form-label">Old Password :</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Enter Old Password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
                 />
               </div>
 
