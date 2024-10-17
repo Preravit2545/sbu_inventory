@@ -123,6 +123,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
             <th>รูป</th>
             <th>ชื่อทรัพย์สิน</th>
             <th>จำนวน</th>
+            <th>ผู้ที่ขอเบิก</th>
             <th>วันที่ร้องขอ</th>
             <th>สถานะ</th>
             <th>การจัดการ</th>
@@ -145,6 +146,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
               </td>
               <td>{val.product_name}</td>
               <td>{val.quantity}</td>
+              <td>{val.emp_firstname} {val.emp_lastname}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
               <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : 'green' }}>
                 {val.status}

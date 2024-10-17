@@ -6,3 +6,10 @@
 button{
   margin-right: 5px;
 }
+
+.content-wrapper {
+  height: 100vh; /* Full height of the viewport */
+  overflow: auto; /* Allows scrolling if content overflows */
+  padding: 20px;  /* Optional: Add padding for better aesthetics */
+  box-sizing: border-box; /* Ensures padding is included in the width/height calculations */
+}

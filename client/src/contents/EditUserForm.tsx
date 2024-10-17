@@ -80,7 +80,7 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
   return (
     <div className="content-wrapper">
       <div className="App">
-        <p>EditUserForm {userID} {userType}</p>
+        <h3 style={{ margin: '10px' }}>แก้ไขข้อมูล</h3>
         <div className="information">
           <form onSubmit={handleSubmit}>
             <div className="container-fluid">

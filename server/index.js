@@ -72,9 +72,42 @@ app.get('/count/employees', (req, res) => {
     });
 });
 
-//คำขอเบิกจ่าย
-app.get('/count/products_request', (req, res) => {
-    db.query("SELECT COUNT(*) AS count FROM products_request where status = 'รอดำเนินการ'", (err, result) => {
+app.get('/count/staff_stock', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM staff_stock", (err, result) => {
+        if (err) {
+            console.error("Error fetching employee count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/manager', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM manager", (err, result) => {
+        if (err) {
+            console.error("Error fetching employee count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/admin', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM admin", (err, result) => {
+        if (err) {
+            console.error("Error fetching employee count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+//จำนวนรอดำเนินการทั้งหมด
+app.get('/count/products_pending', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'รอดำเนินการ'", (err, result) => {
         if (err) {
             console.error("Error fetching products_request count:", err);
             res.status(500).send({ count: 0 });
@@ -83,6 +116,94 @@ app.get('/count/products_request', (req, res) => {
         }
     });
 });
+
+//ของพนักงานห
+app.get('/count/products_pending/:userID', (req, res) => {
+    const { userID } = req.params;
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'รอดำเนินการ' && employee_id = ?", userID, (err, result) => {
+        if (err) {
+            console.error("Error fetching products_pending user count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/products_staff_approved/:userID', (req, res) => {
+    const { userID } = req.params;
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ได้รับการอนุมัติจากเจ้าหน้าที่' && employee_id = ?", userID, (err, result) => {
+        if (err) {
+            console.error("Error fetching products_staff_approved/:userID count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/products_manager_approved/:userID', (req, res) => {
+    const { userID } = req.params;
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ได้รับการอนุมัติจากผู้จัดการ' && employee_id = ?", userID, (err, result) => {
+        if (err) {
+            console.error("Error fetching products_manager_approved/:userID count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/products_refused/:userID', (req, res) => {
+    const { userID } = req.params;
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ถูกปฏิเสธ' && employee_id = ?", userID, (err, result) => {
+        if (err) {
+            console.error("Error fetching products_refused count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+//จบ ของพนักงาน
+
+//จำนวน ได้รับการอนุมัติจากเจ้าหน้าที่ ทั้งหมด
+app.get('/count/products_staff_approved', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ได้รับการอนุมัติจากเจ้าหน้าที่'", (err, result) => {
+        if (err) {
+            console.error("Error fetching products_request count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+//จำนวน ได้รับการอนุมัติจากผู้จัดการ ทั้งหมด
+app.get('/count/products_manager_approved', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ได้รับการอนุมัติจากผู้จัดการ'", (err, result) => {
+        if (err) {
+            console.error("Error fetching products_request count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+//จำนวน ได้รับการอนุมัติจากผู้จัดการ ทั้งหมด
+app.get('/count/products_refused', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM approval_products where status = 'ถูกปฏิเสธ'", (err, result) => {
+        if (err) {
+            console.error("Error fetching products_request count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
 //end dashboard
 
 // Define the /product route
