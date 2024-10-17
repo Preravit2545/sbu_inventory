@@ -54,10 +54,10 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                 </Link>
               </li>
 
-
               {/* พนักงาน Employee*/}
               {userType === 'employee' && (
                 <>
+                  <li className="nav-header">หน้าพนักงาน</li>
                   <li className="nav-item">
                     <Link to="/Request_Product" className="nav-link">
                       <i className="nav-icon ion ion-android-add-circle" />
@@ -76,6 +76,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
               {/* เจ้าหน้าที่ Staff*/}
               {userType === 'staff' && (
                 <>
+                  <li className="nav-header">หน้าเจ้าหน้าที่</li>
                   <li className="nav-item">
                     <Link to="/Approval_Staff_List" className="nav-link">
                       <i className="nav-icon ion ion-checkmark" />
@@ -88,6 +89,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
               {/* เจ้าหน้าที่สต๊อก Staff_stock*/}
               {userType === 'staff_stock' && (
                 <>
+                  <li className="nav-header">หน้าเจ้าหน้าที่สต๊อก</li>
                   <li className="nav-item">
                     <Link to="/ProductManagement" className="nav-link">
                       <i className="nav-icon ion ion-clipboard" />
@@ -100,6 +102,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
               {/* ผู้จัดการ Manager */}
               {userType === 'manager' && (
                 <>
+                  <li className="nav-header">หน้าผู้จัดการ</li>
                   <li className="nav-item">
                     <Link to="/Approval_Manager_List" className="nav-link">
                       <i className="nav-icon ion ion-bag" />
@@ -110,8 +113,9 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
               )}
 
               {/* ผู้ดูแลระบบ Admin */}
-              {userType === 'admin' &&  (
+              {userType === 'admin' && (
                 <>
+                  <li className="nav-header">หน้าผู้ดูแลระบบ</li>
                   <li className="nav-item">
                     <Link to="/UserManagement" className="nav-link">
                       <i className="nav-icon ion ion-person-add" />
@@ -120,6 +124,14 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
                   </li>
                 </>
               )}
+
+              <li className="nav-header">จัดการข้อมูลส่วนตัว</li>
+              <li className="nav-item">
+                <Link to="/dashboard" className="nav-link">
+                  <i className="nav-icon ion ion-android-settings" />
+                  <p>แก้ไขข้อมูลส่วนตัว</p>
+                </Link>
+              </li>
 
               {/* Logout Button */}
               <li className="nav-item">
