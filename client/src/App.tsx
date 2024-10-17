@@ -10,7 +10,7 @@ import Dashboard from './contents/Dashboard';
 import UserManagement from './contents/UserManagement';
 import ProductManagement from './contents/ProductManagement';
 import LoginForm from './contents/Login/LoginForm';
-import Approval_Product from './contents/Approval_Product';
+import EditUserForm from './contents/EditUserForm';
 import Request_Product from './contents/Request_Product';
 import ProtectedRoute from './contents/ProtectedRoute';
 import ApprovalStaffList from './contents/Approval_Staff_List';
@@ -81,10 +81,10 @@ function App() {
             }
           />
           <Route
-            path="/Approval_Product"
+            path="/EditUserForm"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Approval_Product />
+                <EditUserForm userID={userID} userType={userType}/>
               </ProtectedRoute>
             }
           />

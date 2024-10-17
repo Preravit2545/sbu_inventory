@@ -161,6 +161,64 @@ app.post('/adduser', upload.single('image'), (req, res) => {
     });
 });
 
+// GET: ดึงข้อมูลผู้ใช้ตาม userType และ userID
+app.get('/getuser/:userType/:userID', (req, res) => {
+    const { userType, userID } = req.params;
+    const table = userType === 'employee' ? 'employees' :
+        userType === 'staff' ? 'staff' :
+            userType === 'staff_stock' ? 'staff_stock' : 'manager';
+
+    const sqlQuery = `SELECT * FROM ${table} WHERE id = ?`;
+
+    db.query(sqlQuery, [userID], (err, result) => {
+        if (err) {
+            console.error("Error fetching user:", err);
+            res.status(500).send("An error occurred while fetching user data.");
+        } else if (result.length === 0) {
+            res.status(404).send("User not found");
+        } else {
+            const user = result[0];
+            const userData = {
+                ...user,
+                image: user.image ? Buffer.from(user.image).toString('base64') : null // Convert binary image to base64
+            };
+            res.json(userData);
+        }
+    });
+});
+
+// PUT: อัปเดตข้อมูลผู้ใช้ตาม userType และ userID
+app.put('/editupdateuser/:userType/:userID', upload.single('image'), (req, res) => {
+    const { userType, userID } = req.params;
+    const { username, newPassword, firstname, lastname, phone } = req.body;
+    const table = userType === 'employee' ? 'employees' :
+        userType === 'staff' ? 'staff' :
+            userType === 'staff_stock' ? 'staff_stock' : 'manager';
+
+    const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
+
+    let sqlUpdate = `UPDATE ${table} SET username = ?, password = ?, firstname = ?, lastname = ?, phone = ?`;
+    const values = [username, newPassword, firstname, lastname, phone];
+
+    if (image) {
+        sqlUpdate += `, image = ?`;
+        values.push(image); // Add the image to the values if provided
+    }
+
+    sqlUpdate += ` WHERE id = ?`;
+    values.push(userID); // Add userID to the values array
+
+    db.query(sqlUpdate, values, (err, result) => {
+        if (err) {
+            console.error("Error updating user:", err);
+            res.status(500).send("An error occurred while updating the user.");
+        } else {
+            res.send("User updated successfully!");
+        }
+    });
+});
+
+
 // Delete a product
 app.delete('/delete/product/:id', (req, res) => {
     const productId = req.params.id;

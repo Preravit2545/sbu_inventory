@@ -127,7 +127,7 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
 
               <li className="nav-header">จัดการข้อมูลส่วนตัว</li>
               <li className="nav-item">
-                <Link to="/dashboard" className="nav-link">
+                <Link to="/EditUserForm" className="nav-link">
                   <i className="nav-icon ion ion-android-settings" />
                   <p>แก้ไขข้อมูลส่วนตัว</p>
                 </Link>
