@@ -369,6 +369,58 @@ app.post('/request-product', (req, res) => {
     });
 });
 
+app.delete('/delete_approval_request/:request_id', (req, res) => {
+    const requestId = req.params.request_id;
+
+    // Fetch product_id and quantity from the approval request
+    const selectQuery = 'SELECT product_id, quantity FROM approval_products WHERE request_id = ?';
+    db.query(selectQuery, [requestId], (err, results) => {
+        if (err) {
+            console.error('Error fetching request details:', err);
+            return res.status(500).json({ message: 'Error fetching request details' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Request not found' });
+        }
+
+        const { product_id, quantity } = results[0];
+
+        // Update the request status to "ยกเลิกโดยพนักงาน"
+        const updateStatusQuery = `
+            UPDATE approval_products
+            SET status = 'ยกเลิกโดยพนักงาน'
+            WHERE request_id = ?`;
+        db.query(updateStatusQuery, [requestId], (err, result) => {
+            if (err) {
+                console.error('Error updating request status:', err);
+                return res.status(500).json({ message: 'Error updating request status' });
+            }
+
+            // If the status was updated, update the product's pending and quantity fields
+            const updateProductQuery = `
+                UPDATE products
+                SET pending = pending - ?, 
+                    qty = qty + ?, 
+                    status = CASE 
+                        WHEN qty + ? > 0 THEN 'มี' 
+                        ELSE 'หมด' 
+                    END
+                WHERE id = ?
+            `;
+            db.query(updateProductQuery, [quantity, quantity, quantity, product_id], (err, updateResult) => {
+                if (err) {
+                    console.error('Error updating product pending and quantity:', err);
+                    return res.status(500).json({ message: 'Error updating product pending and quantity' });
+                }
+
+                res.status(200).json({ message: 'Request canceled and product updated successfully' });
+            });
+        });
+    });
+});
+
+
 app.get('/approval_employee_list', (req, res) => {
     const employee_id = req.query.employee_id;
     const query = `

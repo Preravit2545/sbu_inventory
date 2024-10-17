@@ -20,20 +20,37 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
   const [showFilters, setShowFilters] = useState(true);
   const [sortOrder, setSortOrder] = useState<string>('asc'); // State for sort order
 
-    const getApprovalRequests = () => {
-      if (!userID) return; // Ensure userID is available
+  const getApprovalRequests = () => {
+    if (!userID) return; // Ensure userID is available
 
-      axios.get(`http://localhost:3001/approval_employee_list`, {
-        params: { employee_id: userID } // This sends the userID as a query parameter
+    axios.get(`http://localhost:3001/approval_employee_list`, {
+      params: { employee_id: userID } // This sends the userID as a query parameter
+    })
+      .then((response) => {
+        setRequestList(response.data);
+        setFilteredRequestList(response.data); // Initialize the filtered list
       })
-        .then((response) => {
-          setRequestList(response.data);
-          setFilteredRequestList(response.data); // Initialize the filtered list
-        })
-        .catch((error) => {
-          console.error('Error fetching approval requests:', error);
-        });
-    };
+      .catch((error) => {
+        console.error('Error fetching approval requests:', error);
+      });
+  };
+
+  const handleDeleteRequest = (requestId: number) => {
+    if (!window.confirm("คุณต้องการยกเลิกคำขอนี้ใช่หรือไม่?")) return;
+
+    axios
+      .delete(`http://localhost:3001/delete_approval_request/${requestId}`)
+      .then((response) => {
+        alert("คำขอถูกยกเลิกเรียบร้อยแล้ว");
+        // Remove the deleted request from the list
+        setRequestList((prevList) => prevList.filter((request) => request.request_id !== requestId));
+        setFilteredRequestList((prevList) => prevList.filter((request) => request.request_id !== requestId));
+      })
+      .catch((error) => {
+        console.error('Error deleting request:', error);
+        alert('มีข้อผิดพลาดในการยกเลิกคำขอ');
+      });
+  };
 
   const ViewingRequest = (request: any) => {
     setSelectedRequest(request);
@@ -124,6 +141,7 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
                 <option value="รอดำเนินการ">รอดำเนินการ</option>
                 <option value="ได้รับการอนุมัติจากเจ้าหน้าที่">ได้รับการอนุมัติจากเจ้าหน้าที่</option>
                 <option value="ได้รับการอนุมัติจากผู้จัดการ">ได้รับการอนุมัติจากผู้จัดการ</option>
+                <option value="ยกเลิกโดยพนักงาน">ยกเลิกโดยพนักงาน</option>
                 <option value="ถูกปฏิเสธ">ถูกปฏิเสธ</option>
               </Form.Control>
             </Form.Group>
@@ -174,14 +192,18 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
               <td>{val.product_name}</td>
               <td>{val.quantity}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
-              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : (val.status === 'ถูกปฏิเสธ' ? 'red' : 'green') }}>
+              <td style={{ color: val.status === 'รอดำเนินการ' || val.status === 'ได้รับการอนุมัติจากเจ้าหน้าที่' ? 'orange' : (val.status === 'ยกเลิกโดยพนักงาน' ||val.status === 'ถูกปฏิเสธ' ? 'red' : 'green') }}>
                 {val.status}
               </td>
               <td>
                 <button className="btn btn-warning" onClick={() => ViewingRequest(val)}>
                   ดูรายละเอียดคำขอ
                 </button>
-                <button className="btn btn-danger">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteRequest(val.request_id)}
+                  disabled={val.status === "ได้รับการอนุมัติจากเจ้าหน้าที่" || val.status === "ได้รับการอนุมัติจากผู้จัดการ" || val.status === "ยกเลิกโดยพนักงาน" || val.status === "ถูกปฏิเสธ" }
+                >
                   ยกเลิก
                 </button>
               </td>
