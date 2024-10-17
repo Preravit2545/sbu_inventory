@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Swal from 'sweetalert2';
 
 function UserManagement() {
     const [UserList, setUserList] = useState<any[]>([]);
@@ -34,15 +35,25 @@ function UserManagement() {
 
         axios.put(`http://localhost:3001/updateuser/${id}`, formData)
             .then(response => {
-                alert(response.data);
+                Swal.fire({
+                    title: 'สำเร็จ',
+                    text: response.data,
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง'
+                });
                 setEditMode(null); // Exit edit mode
                 getUsers(); // Refresh the list
             })
             .catch(error => {
-                console.error("There was an error updating the user!", error);
+                console.error("มีข้อผิดพลาดในการอัปเดตผู้ใช้!", error);
+                Swal.fire({
+                    title: 'ผิดพลาด',
+                    text: 'มีข้อผิดพลาดในการอัปเดตผู้ใช้',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
             });
     };
-
 
     const resetForm = () => {
         setUsername("");
@@ -65,19 +76,40 @@ function UserManagement() {
     }, [position]);
 
     const deleteUser = (id: number, role: string) => {
-        if (window.confirm(`Are you sure you want to delete this ${role === 'staff' ? 'staff member' : 'employee'}?`)) {
-            const endpoint = role === 'employee' ? `employee` :
-                role === `staff` ? `staff` : 
-                role === 'staff_stock' ? 'staff_stock' : 'manager';
-            axios.delete(`http://localhost:3001/delete/${endpoint}/${id}`)
-                .then(response => {
-                    alert(response.data);
-                    setUserList(UserList.filter(user => user.id !== id));
-                })
-                .catch(error => {
-                    console.error("There was an error deleting the user!", error);
-                });
-        }
+        Swal.fire({
+            title: 'คุณแน่ใจหรือไม่?',
+            text: `คุณต้องการลบ ${role === 'employee' ? 'พนักงาน' : role === 'staff' ? 'เจ้าหน้าที่' : role === 'staff_stock' ? 'เจ้าหน้าที่สต๊อก' : 'ผู้จัดการ'} นี้จริงๆ หรือไม่?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const endpoint = role === 'employee' ? `employee` :
+                    role === 'staff' ? `staff` :
+                        role === 'staff_stock' ? 'staff_stock' : 'manager';
+
+                axios.delete(`http://localhost:3001/delete/${endpoint}/${id}`)
+                    .then(response => {
+                        Swal.fire(
+                            'ลบแล้ว!',
+                            response.data,
+                            'success'
+                        );
+                        setUserList(UserList.filter(user => user.id !== id));
+                    })
+                    .catch(error => {
+                        console.error("เกิดข้อผิดพลาดในการลบผู้ใช้!", error);
+                        Swal.fire(
+                            'ข้อผิดพลาด!',
+                            'เกิดข้อผิดพลาดในการลบผู้ใช้.',
+                            'error'
+                        );
+                    });
+            }
+        });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -95,14 +127,25 @@ function UserManagement() {
 
         axios.post('http://localhost:3001/adduser', formData)
             .then(response => {
-                alert(response.data);
+                Swal.fire({
+                    title: 'สำเร็จ',
+                    text: response.data,
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง'
+                });
                 getUsers();
                 resetForm();
             })
             .catch(error => {
                 console.error("There was an error adding the user!", error);
+                Swal.fire({
+                    title: 'ผิดพลาด',
+                    text: 'ไม่สามารถเพิ่มผู้ใช้ได้',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
             });
-            
+
     };
 
     return (
@@ -310,7 +353,7 @@ function UserManagement() {
                                         <button className="btn btn-danger" onClick={() => deleteUser(val.id, position)}>
                                             Delete {position === 'staff' ? 'เจ้าหน้าที่ทั่วไป' :
                                                 position === 'employee' ? 'พนักงาน' :
-                                                position === 'staff_stock' ? 'พนักงานสต๊อก' : 'ผู้จัดการ'}
+                                                    position === 'staff_stock' ? 'พนักงานสต๊อก' : 'ผู้จัดการ'}
                                         </button>
                                     </>
                                 )}

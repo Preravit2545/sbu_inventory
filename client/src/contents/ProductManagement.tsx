@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function ProductManagement() {
     const [name, setName] = useState("");
@@ -21,21 +22,31 @@ function ProductManagement() {
     }, []);
 
     const deleteProduct = (id: number) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            axios.delete(`http://localhost:3001/delete/product/${id}`)
-                .then(response => {
-                    alert(response.data);
-                    setProductList(ProductList.filter(product => product.id !== id));
-                })
-                .catch(error => {
-                    console.error("There was an error deleting the product!", error);
-                });
-        }
+        Swal.fire({
+            title: "คุณแน่ใจหรือไม่?",
+            text: "คุณต้องการลบผลิตภัณฑ์นี้?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ใช่, ลบ!",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:3001/delete/product/${id}`)
+                    .then(response => {
+                        Swal.fire("ลบเรียบร้อย!", response.data, "success");
+                        setProductList(ProductList.filter(product => product.id !== id));
+                    })
+                    .catch(error => {
+                        console.error("เกิดข้อผิดพลาดในการลบผลิตภัณฑ์!", error);
+                        Swal.fire("เกิดข้อผิดพลาด!", "ไม่สามารถลบผลิตภัณฑ์ได้", "error");
+                    });
+            }
+        });
     };
 
     const handleAddProduct = (event: React.FormEvent) => {
         event.preventDefault();
-
+    
         const productData = new FormData();
         productData.append("name", name);
         productData.append("type", type);
@@ -44,17 +55,21 @@ function ProductManagement() {
         if (image) {
             productData.append("image", image);
         }
-
+    
+        console.log('Product Data:', productData); // Log to see what you're sending
+    
         axios.post('http://localhost:3001/addproduct', productData)
             .then(() => {
-                getProduct();
-                setName("");
-                setType("");
-                setQty(0);
-                setImage(null);
-                setStatus(1);
+                getProduct(); // Refresh the product list
+                Swal.fire("สำเร็จ!", "เพิ่มทรัพย์สินเรียบร้อยแล้ว!", "success");
+                resetForm(); // Clear the form inputs
+            })
+            .catch((error) => {
+                console.error("เกิดข้อผิดพลาดในการเพิ่มผลิตภัณฑ์!", error);
+                Swal.fire("เกิดข้อผิดพลาด!", "ไม่สามารถเพิ่มผลิตภัณฑ์ได้", "error");
             });
     };
+    
 
     // start UPDATE
     const handleEditProduct = (event: React.FormEvent, id: number) => {
@@ -72,7 +87,12 @@ function ProductManagement() {
         axios.put(`http://localhost:3001/updateproduct/${id}`, productData)
             .then(() => {
                 getProduct();
+                Swal.fire("สำเร็จ!", "ปรับปรุงผลิตภัณฑ์เรียบร้อยแล้ว!", "success");
                 resetForm();
+            })
+            .catch((error) => {
+                console.error("เกิดข้อผิดพลาดในการปรับปรุงผลิตภัณฑ์!", error);
+                Swal.fire("เกิดข้อผิดพลาด!", "ไม่สามารถปรับปรุงผลิตภัณฑ์ได้", "error");
             });
     };
 
@@ -97,7 +117,6 @@ function ProductManagement() {
         resetForm();
     };
     // end UPDATE
-
 
     return (
         <div className="content-wrapper">

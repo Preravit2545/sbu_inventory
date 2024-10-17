@@ -222,14 +222,15 @@ app.get('/product', (req, res) => {
     });
 });
 
-// Define the /addproduct route
 app.post('/addproduct', upload.single('image'), (req, res) => {
     const { name, type, qty } = req.body;
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
 
+    // Set status based on quantity
     const status = qty > 0 ? "มี" : "หมด";
 
-    const sqlInsert = "INSERT INTO products (name, type, qty, image, status) VALUES (?, ?, ?, ?, ?, ?)";
+    // Correct the SQL statement to match the number of values
+    const sqlInsert = "INSERT INTO products (name, type, qty, image, status) VALUES (?, ?, ?, ?, ?)";
 
     db.query(sqlInsert, [name, type, qty, image, status], (err, result) => {
         if (err) {
@@ -240,6 +241,7 @@ app.post('/addproduct', upload.single('image'), (req, res) => {
         }
     });
 });
+
 
 // Define the /user route with position-based query
 app.get('/user', (req, res) => {

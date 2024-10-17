@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 interface ApprovalStaffListProps {
   userID: number | null; // Define the userID prop type
@@ -13,9 +14,9 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
-  const [approvalStatus, setApprovalStatus] = useState<string>(''); // สำหรับติดตามสถานะที่เลือก
-  const [staffRemark, setStaffRemark] = useState<string>(''); // สำหรับเก็บข้อคิดเห็นของเจ้าหน้าที่
-  const [searchQuery, setSearchQuery] = useState<string>(''); // สำหรับเก็บข้อมูลการค้นหา
+  const [approvalStatus, setApprovalStatus] = useState<string>(''); // Track selected status
+  const [staffRemark, setStaffRemark] = useState<string>(''); // Store staff remark
+  const [searchQuery, setSearchQuery] = useState<string>(''); // Store search input
   const [sortOrder, setSortOrder] = useState<string>('desc'); // State for sort order
 
   const getApprovalRequests = () => {
@@ -25,6 +26,11 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
       })
       .catch((error) => {
         console.error('Error fetching approval requests:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'ไม่สามารถดึงข้อมูลคำขออนุมัติได้!',
+        });
       });
   };
 
@@ -40,18 +46,25 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
 
   const handleApprovalProduct = (request: any) => {
     setSelectedRequest(request);
-    setShowApprovalModal(true); // เปิด modal ของการจัดการอนุมัติ
+    setShowApprovalModal(true); // Open approval management modal
   };
 
   const handleCloseApprovalModal = () => {
     setShowApprovalModal(false);
-    setApprovalStatus(''); // รีเซ็ตค่า
-    setStaffRemark(''); // รีเซ็ตค่าข้อคิดเห็น
+    setApprovalStatus(''); // Reset status
+    setStaffRemark(''); // Reset remark
   };
 
   const handleSubmitApproval = () => {
     const staffID = userID;
-    if (!approvalStatus) return;
+    if (!approvalStatus) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'กรุณาเลือกสถานะ!',
+        text: 'คุณต้องเลือกสถานะการอนุมัติ',
+      });
+      return;
+    }
 
     axios.post(`http://localhost:3001/approve_staff`, {
       staffID: staffID,
@@ -59,17 +72,27 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
       Request_qty: selectedRequest.quantity,
       request_id: selectedRequest.request_id,
       status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากเจ้าหน้าที่' : 'ถูกปฏิเสธ',
-      staff_remark: staffRemark // ส่งข้อคิดเห็นของเจ้าหน้าที่ไปด้วย
+      staff_remark: staffRemark // Send staff remark
     })
       .then((response) => {
         console.log("Update status success:", response.data);
-        getApprovalRequests(); // รีเฟรชรายการหลังการอัปเดต
+        Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: `คำขอได้รับการ ${approvalStatus === 'approve' ? 'อนุมัติ' : 'ปฏิเสธ'}!`,
+        });
+        getApprovalRequests(); // Refresh list after update
       })
       .catch((error) => {
         console.error("Error updating status:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด!',
+          text: 'ไม่สามารถอัปเดตสถานะได้!',
+        });
       });
 
-    handleCloseApprovalModal(); // ปิด modal หลังจากส่งข้อมูล
+    handleCloseApprovalModal(); // Close modal after submission
   };
 
   useEffect(() => {
@@ -206,29 +229,28 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
       {/* Approval/Reject Modal */}
       <Modal show={showApprovalModal} onHide={handleCloseApprovalModal}>
         <Modal.Header>
-          <Modal.Title>จัดการอนุมัติคำขอ</Modal.Title>
+          <Modal.Title>การจัดการอนุมัติ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group controlId="approvalStatus">
-            <Form.Label>สถานะ</Form.Label>
+            <Form.Label>เลือกสถานะการอนุมัติ</Form.Label>
             <Form.Control
               as="select"
               value={approvalStatus}
               onChange={(e) => setApprovalStatus(e.target.value)}
             >
-              <option value="">เลือก...</option>
+              <option value="">เลือกสถานะ...</option>
               <option value="approve">อนุมัติ</option>
-              <option value="reject">ไม่อนุมัติ</option>
+              <option value="reject">ปฏิเสธ</option>
             </Form.Control>
           </Form.Group>
           <Form.Group controlId="staffRemark">
-            <Form.Label>ข้อคิดเห็นจากเจ้าหน้าที่</Form.Label>
+            <Form.Label>หมายเหตุจากเจ้าหน้าที่</Form.Label>
             <Form.Control
-              as="textarea"
-              rows={3}
+              type="text"
+              placeholder="กรุณากรอกหมายเหตุ (ถ้ามี)"
               value={staffRemark}
               onChange={(e) => setStaffRemark(e.target.value)}
-              placeholder="ใส่ข้อคิดเห็น..."
             />
           </Form.Group>
         </Modal.Body>
@@ -236,13 +258,13 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
           <Button variant="secondary" onClick={handleCloseApprovalModal}>
             ยกเลิก
           </Button>
-          <Button variant="primary" onClick={handleSubmitApproval} disabled={!approvalStatus}>
-            ยืนยัน
+          <Button variant="primary" onClick={handleSubmitApproval}>
+            ส่งคำขออนุมัติ
           </Button>
         </Modal.Footer>
       </Modal>
     </div>
   );
-}
+};
 
 export default ApprovalStaffList;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 interface RequestUserProps {
   userID: number | null;
@@ -8,36 +9,35 @@ interface RequestUserProps {
 
 const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
   const [username, setUsername] = useState('');
-  const [newPassword, setNewPassword] = useState(''); // New password
-  const [confirmPassword, setConfirmPassword] = useState(''); // Confirm new password
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [phone, setPhone] = useState('');
   const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null); // Preview the base64 image
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const fetchUserData = async () => {
+    try {
+      if (userID && userType) {
+        const response = await axios.get(`http://localhost:3001/getuser/${userType}/${userID}`);
+        const userData = response.data;
+
+        setUsername(userData.username);
+        setFirstname(userData.firstname);
+        setLastname(userData.lastname);
+        setPhone(userData.phone);
+
+        if (userData.image) {
+          setImagePreview(`data:image/jpeg;base64,${userData.image}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   useEffect(() => {
-    // Fetch user details based on userID and userType
-    const fetchUserData = async () => {
-      try {
-        if (userID && userType) {
-          const response = await axios.get(`http://localhost:3001/getuser/${userType}/${userID}`);
-          const userData = response.data;
-
-          setUsername(userData.username);
-          setFirstname(userData.firstname);
-          setLastname(userData.lastname);
-          setPhone(userData.phone);
-
-          // Set the base64 image preview if available
-          if (userData.image) {
-            setImagePreview(`data:image/jpeg;base64,${userData.image}`);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
     fetchUserData();
   }, [userID, userType]);
 
@@ -45,18 +45,26 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
     e.preventDefault();
 
     if (!username || !newPassword || !confirmPassword) {
-      alert('All fields are required');
+      Swal.fire({
+        icon: 'warning',
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'โปรดกรอกข้อมูลให้ครบถ้วน',
+      });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      alert('New password and confirmation password do not match');
+      Swal.fire({
+        icon: 'warning',
+        title: 'เกิดข้อผิดพลาด!',
+        text: 'รหัสผ่าน และ ยืนยันรหัสผ่านไม่ตรงกัน',
+      });
       return;
     }
 
     const formData = new FormData();
     formData.append('username', username);
-    formData.append('newPassword', newPassword); // Add new password
+    formData.append('newPassword', newPassword);
     formData.append('firstname', firstname);
     formData.append('lastname', lastname);
     formData.append('phone', phone);
@@ -70,10 +78,19 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('User updated successfully');
+      Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ!',
+        text: 'ข้อมูลผู้ใช้ได้รับการอัพเดตแล้ว',
+      });
+      fetchUserData();
     } catch (error) {
       console.error('Error updating user:', error);
-      alert('Failed to update user');
+      Swal.fire({
+        icon: 'error',
+        title: 'ผิดพลาด!',
+        text: 'เกิดข้อผิดพลาดบางอย่างในการอัพเดตข้อมุลผู้ใช้',
+      });
     }
   };
 
@@ -84,7 +101,6 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
         <div className="information">
           <form onSubmit={handleSubmit}>
             <div className="container-fluid">
-              {/* Display the image preview */}
               <div className="mb-3">
                 {imagePreview && (
                   <img
@@ -104,7 +120,6 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                 />
               </div>
 
-              {/* New Password */}
               <div className="mb-3">
                 <label htmlFor="newPassword" className="form-label">New Password :</label>
                 <input
@@ -116,7 +131,6 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                 />
               </div>
 
-              {/* Confirm New Password */}
               <div className="mb-3">
                 <label htmlFor="confirmPassword" className="form-label">Confirm New Password :</label>
                 <input

@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import "./css/Request_Product.css";
 
 interface RequestProductProps {
@@ -29,7 +30,11 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
       setProductList(response.data);
       setFilteredProductList(response.data);
     } catch (error) {
-      alert('Error fetching products: ');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error fetching products',
+        text: 'There was an error retrieving the product list. Please try again later.',
+      });
     }
   };
 
@@ -56,14 +61,26 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
 
       try {
         const response = await axios.post('http://localhost:3001/request-product', requestData);
-        alert(response.data.message);
+        Swal.fire({
+          icon: 'success',
+          title: 'Request Submitted',
+          text: response.data.message,
+        });
         setShowRequestModal(false);
         getProduct(); // Optionally refresh product list
       } catch (error) {
-        alert('Error submitting request: ');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error submitting request',
+          text: 'There was an error submitting your request. Please try again.',
+        });
       }
     } else {
-      alert('Invalid quantity requested');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid quantity',
+        text: 'Please enter a valid quantity.',
+      });
     }
   };
 
@@ -248,26 +265,24 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                 <img
                   src={`data:image/jpeg;base64,${selectedProduct.image}`}
                   alt={selectedProduct.name}
-                  className="modal-product-image"
+                  className="img-fluid mt-3"
                 />
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Close
-              </Button>
+              <Button variant="secondary" onClick={handleCloseModal}>ปิด</Button>
             </Modal.Footer>
           </Modal>
         )}
 
-        {/* Request Modal */}
+        {/* Request Product Modal */}
         {selectedProduct && (
           <Modal show={showRequestModal} onHide={handleRequestClose}>
             <Modal.Header>
-              <Modal.Title>ขอเบิกทรัพย์สิน</Modal.Title>
+              <Modal.Title>เบิกทรัพย์สิน</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            {selectedProduct.image && (
+              {selectedProduct.image && (
                 <div className="mb-3">
                   <img
                     src={`data:image/jpeg;base64,${selectedProduct.image}`}
@@ -279,36 +294,30 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                 </div>
               )}
               <Form>
-                <Form.Group controlId="requestQuantity">
-                  <Form.Label>จำนวนที่ต้องการ</Form.Label>
+                <Form.Group controlId="requestQty">
+                  <Form.Label>จำนวนที่ต้องการเบิก</Form.Label>
                   <Form.Control
                     type="number"
-                    value={requestQty}
                     min="1"
                     max={selectedProduct.qty}
+                    value={requestQty}
                     onChange={(e) => setRequestQty(Number(e.target.value))}
-                    placeholder={`กรอกจำนวน (สูงสุด ${selectedProduct.qty})`}
                   />
                 </Form.Group>
                 <Form.Group controlId="requestReason">
-                  <Form.Label>เหตุผล</Form.Label>
+                  <Form.Label>เหตุผลในการเบิก</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={3}
                     value={requestReason}
                     onChange={(e) => setRequestReason(e.target.value)}
-                    placeholder="กรอกเหตุผลในการเบิกทรัพย์สิน..."
                   />
                 </Form.Group>
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleRequestClose}>
-                ปิด
-              </Button>
-              <Button variant="primary" onClick={handleSubmitRequest}>
-                ส่งคำขอ
-              </Button>
+              <Button variant="secondary" onClick={handleRequestClose}>ยกเลิก</Button>
+              <Button variant="primary" onClick={handleSubmitRequest}>ยืนยันการเบิก</Button>
             </Modal.Footer>
           </Modal>
         )}

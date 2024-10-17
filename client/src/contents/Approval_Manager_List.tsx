@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Swal from 'sweetalert2';
 
 interface ApprovalmanagerListProps {
   userID: number | null;
@@ -16,7 +17,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [approvalStatus, setApprovalStatus] = useState<string>('');
   const [managerRemark, setmanagerRemark] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('desc');
 
   const getApprovalRequests = () => {
@@ -27,6 +28,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       })
       .catch((error) => {
         console.error('Error fetching approval requests:', error);
+        Swal.fire('ข้อผิดพลาด!', 'ไม่สามารถดึงข้อมูลคำขออนุมัติได้', 'error');
       });
   };
 
@@ -64,10 +66,12 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       manager_remark: managerRemark
     })
     .then((response) => {
+      Swal.fire('สำเร็จ!', 'สถานะคำขอได้รับการอัปเดตแล้ว', 'success');
       getApprovalRequests();
     })
     .catch((error) => {
       console.error("Error updating status:", error);
+      Swal.fire('ข้อผิดพลาด!', 'ไม่สามารถอัปเดตสถานะได้', 'error');
     });
 
     handleCloseApprovalModal();
@@ -186,7 +190,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
             <Modal.Title>รายละเอียดคำขอ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <p><strong>รหัสการร้องขอ:</strong>{selectedRequest.request_id}</p>
+            <p><strong>รหัสการร้องขอ:</strong>{selectedRequest.request_id}</p>
             <p><strong>ชื่อทรัพย์สิน:</strong> {selectedRequest.product_name}</p>
             <p><strong>จำนวน:</strong> {selectedRequest.quantity}</p>
             <p><strong>ผู้ที่ขอเบิก:</strong> {selectedRequest.emp_firstname} {selectedRequest.emp_lastname}</p>
@@ -225,28 +229,28 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
               value={approvalStatus}
               onChange={(e) => setApprovalStatus(e.target.value)}
             >
-              <option value="">เลือก...</option>
+              <option value="">เลือกสถานะ</option>
               <option value="approve">อนุมัติ</option>
               <option value="reject">ไม่อนุมัติ</option>
             </Form.Control>
           </Form.Group>
+
           <Form.Group controlId="managerRemark">
             <Form.Label>ข้อคิดเห็นจากผู้จัดการ</Form.Label>
             <Form.Control
               as="textarea"
-              rows={3}
               value={managerRemark}
               onChange={(e) => setmanagerRemark(e.target.value)}
-              placeholder="ใส่ข้อคิดเห็น..."
+              rows={3}
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseApprovalModal}>
-            ยกเลิก
+            ปิด
           </Button>
-          <Button variant="primary" onClick={handleSubmitApproval} disabled={!approvalStatus}>
-            ยืนยัน
+          <Button variant="primary" onClick={handleSubmitApproval}>
+            ส่งการอนุมัติ
           </Button>
         </Modal.Footer>
       </Modal>
