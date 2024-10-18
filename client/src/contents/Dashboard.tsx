@@ -120,13 +120,13 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-warning">
+                    <div className="small-box bg-info">
                       <div className="inner">
                         <h3>{employeeCount}</h3>
                         <p>พนักงาน</p>
                       </div>
                       <div className="icon">
-                        <i className="ion ion-man" />
+                        <i className="ion ion-person" />
                       </div>
                     </div>
                   </div>
@@ -136,7 +136,7 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-info">
+                    <div className="small-box bg-danger">
                       <div className="inner">
                         <h3>{staffCount}</h3>
                         <p>เจ้าหน้าที่</p>
@@ -152,7 +152,7 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-info">
+                    <div className="small-box bg-success">
                       <div className="inner">
                         <h3>{StaffStockCount}</h3>
                         <p>เจ้าหน้าที่สต๊อก</p>
@@ -167,7 +167,7 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-info">
+                    <div className="small-box bg-warning">
                       <div className="inner">
                         <h3>{ManagerCount}</h3>
                         <p>ผู้จัดการ</p>
@@ -182,7 +182,7 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-info">
+                    <div className="small-box bg-dark">
                       <div className="inner">
                         <h3>{AdminCount}</h3>
                         <p>ผู้ดูแลระบบ</p>
