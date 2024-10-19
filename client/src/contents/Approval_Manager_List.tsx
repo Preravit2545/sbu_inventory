@@ -97,7 +97,16 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
   };
 
   useEffect(() => {
+    // เรียกข้อมูลครั้งแรก
     getApprovalRequests();
+  
+    // ตั้ง interval ให้เช็คข้อมูลใหม่ทุกๆ 5 วินาที
+    const interval = setInterval(() => {
+      getApprovalRequests();
+    }, 5000); // 5 วินาที
+  
+    // Cleanup interval เมื่อ component ถูก unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (

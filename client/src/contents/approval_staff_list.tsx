@@ -95,9 +95,51 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
     handleCloseApprovalModal(); // Close modal after submission
   };
 
+
   useEffect(() => {
-    getApprovalRequests();
-  }, []);
+    // ฟังก์ชันเพื่อดึงข้อมูลครั้งแรกและแจ้งเตือนเมื่อมีการเปลี่ยนแปลง
+    const previousRequestList = requestList;
+  
+    const getApprovalRequestsWithNotification = () => {
+      axios.get('http://localhost:3001/approval_staff_list')
+        .then((response) => {
+          const newRequestList = response.data;
+  
+          // Check if there are new requests
+          if (newRequestList.length !== previousRequestList.length) {
+            Swal.fire({
+              icon: 'info',
+              title: 'ข้อมูลใหม่เข้ามา!',
+              text: 'มีคำขอใหม่ที่ต้องพิจารณา',
+              timer: 3000,
+              showConfirmButton: false,
+            });
+          }
+  
+          setRequestList(newRequestList);
+        })
+        .catch((error) => {
+          console.error('Error fetching approval requests:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด!',
+            text: 'ไม่สามารถดึงข้อมูลคำขออนุมัติได้!',
+          });
+        });
+    };
+  
+    // ดึงข้อมูลคำขออนุมัติเมื่อ component mount
+    getApprovalRequestsWithNotification();
+  
+    // ตั้ง interval ให้เช็คข้อมูลใหม่ทุกๆ 5 วินาที
+    const interval = setInterval(() => {
+      getApprovalRequestsWithNotification();
+    }, 5000); // 5 วินาที
+  
+    // Cleanup interval เมื่อ component ถูก unmount
+    return () => clearInterval(interval);
+  }, [requestList]);
+  
 
   // Filtered request list based on search query
   const filteredRequests = requestList.filter(request =>
