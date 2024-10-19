@@ -104,14 +104,14 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
       axios.get('http://localhost:3001/approval_staff_list')
         .then((response) => {
           const newRequestList = response.data;
-  
           // Check if there are new requests
           if (newRequestList.length !== previousRequestList.length) {
             Swal.fire({
               icon: 'info',
               title: 'ข้อมูลใหม่เข้ามา!',
               text: 'มีคำขอใหม่ที่ต้องพิจารณา',
-              timer: 3000,
+              timer: 5000,
+              timerProgressBar: true,
               showConfirmButton: false,
             });
           }
@@ -134,7 +134,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
     // ตั้ง interval ให้เช็คข้อมูลใหม่ทุกๆ 5 วินาที
     const interval = setInterval(() => {
       getApprovalRequestsWithNotification();
-    }, 5000); // 5 วินาที
+    }, 10000); // 5 วินาที
   
     // Cleanup interval เมื่อ component ถูก unmount
     return () => clearInterval(interval);
@@ -231,7 +231,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
             </tr>
           )) : (
             <tr>
-              <td colSpan={7} className="text-center">ไม่พบข้อมูลที่ค้นหา</td>
+              <td colSpan={7} className="text-center">ไม่พบข้อมูล</td>
             </tr>
           )}
         </tbody>

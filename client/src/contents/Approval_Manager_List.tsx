@@ -32,6 +32,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       });
   };
 
+
   const ViewingRequest = (request: any) => {
     setSelectedRequest(request);
     setShowModal(true);
@@ -65,14 +66,14 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
       status: approvalStatus === 'approve' ? 'ได้รับการอนุมัติจากผู้จัดการ' : 'ถูกปฏิเสธ',
       manager_remark: managerRemark
     })
-    .then((response) => {
-      Swal.fire('สำเร็จ!', 'สถานะคำขอได้รับการอัปเดตแล้ว', 'success');
-      getApprovalRequests();
-    })
-    .catch((error) => {
-      console.error("Error updating status:", error);
-      Swal.fire('ข้อผิดพลาด!', 'ไม่สามารถอัปเดตสถานะได้', 'error');
-    });
+      .then((response) => {
+        Swal.fire('สำเร็จ!', 'สถานะคำขอได้รับการอัปเดตแล้ว', 'success');
+        getApprovalRequests();
+      })
+      .catch((error) => {
+        console.error("Error updating status:", error);
+        Swal.fire('ข้อผิดพลาด!', 'ไม่สามารถอัปเดตสถานะได้', 'error');
+      });
 
     handleCloseApprovalModal();
   };
@@ -99,12 +100,21 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
   useEffect(() => {
     // เรียกข้อมูลครั้งแรก
     getApprovalRequests();
-  
+    
+    Swal.fire({
+      icon: 'info',
+      title: 'ข้อมูลใหม่เข้ามา!',
+      text: 'มีคำขอใหม่ที่ต้องพิจารณา',
+      timer: 5000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+
     // ตั้ง interval ให้เช็คข้อมูลใหม่ทุกๆ 5 วินาที
     const interval = setInterval(() => {
       getApprovalRequests();
     }, 5000); // 5 วินาที
-  
+
     // Cleanup interval เมื่อ component ถูก unmount
     return () => clearInterval(interval);
   }, []);
