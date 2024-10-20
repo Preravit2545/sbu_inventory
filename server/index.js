@@ -311,7 +311,8 @@ app.get('/getuser/:userType/:userID', (req, res) => {
     const { userType, userID } = req.params;
     const table = userType === 'employee' ? 'employees' :
         userType === 'staff' ? 'staff' :
-            userType === 'staff_stock' ? 'staff_stock' : 'manager';
+            userType === 'staff_stock' ? 'staff_stock' :
+                userType === 'manager' ? 'manager' : 'admin';
 
     const sqlQuery = `SELECT * FROM ${table} WHERE id = ?`;
 
