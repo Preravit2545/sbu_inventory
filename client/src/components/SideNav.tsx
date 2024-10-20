@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 interface SideNavProps {
   userID: number | null; // Add userID prop
@@ -8,7 +9,7 @@ interface SideNavProps {
   onLogout: () => void;
 }
 
-function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavProps) {
+function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
   const navigate = useNavigate();
 
   if (!userType) return null;
@@ -40,7 +41,20 @@ function SideNav({ userID, userType, userName, userImage, onLogout }: SideNavPro
             />
           )}
           {/* name */}
-          <span className="brand-text font-weight-light">{userID}{userName}</span>
+          <span
+            className="brand-text font-weight-light"
+            style={{ fontSize: userType === 'staff_stock' ? '14px' : '20px' }} // Adjust sizes based on userType
+          >
+            {userName} (
+            {{
+              employee: 'พนักงาน',
+              staff: 'เจ้าหน้าที่',
+              staff_stock: 'เจ้าหน้าที่สต๊อก',
+              admin: 'ผู้ดูแลระบบ',
+              manager: 'ผู้จัดการ'
+            }[userType] || ''}
+            )
+          </span>
         </Link>
         {/* Sidebar */}
         <div className="sidebar">
