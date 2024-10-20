@@ -166,6 +166,28 @@ app.get('/count/products_refused/:userID', (req, res) => {
     });
 });
 
+
+app.get('/count/product_available', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM products where status = 'มี'", (err, result) => {
+        if (err) {
+            console.error("Error fetching employee count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/count/product_out_of_stock', (req, res) => {
+    db.query("SELECT COUNT(*) AS count FROM products where status = 'หมด'", (err, result) => {
+        if (err) {
+            console.error("Error fetching employee count:", err);
+            res.status(500).send({ count: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
 //จบ ของพนักงาน
 
 //จำนวน ได้รับการอนุมัติจากเจ้าหน้าที่ ทั้งหมด

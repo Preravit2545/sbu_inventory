@@ -18,6 +18,8 @@ function Dashboard({ userType, userID }: DashboardProps) {
   const [ProductsStaffApprovedForUserCount, setProductsStaffApprovedForUserCount] = useState(0);
   const [ProductsManagerApprovedForUserCount, setProductsManagerApprovedForUserCount] = useState(0);
   const [ProductRefusedForUserCount, setProductRefusedForUserCount] = useState(0);
+  const [ProductAvailableCount, setProductAvailableCount] = useState(0);
+  const [ProductOutOfStockCount, setProductOutOfStockCount] = useState(0);
   const [StaffApprovedCount, setStaffApprovedCount] = useState(0);
   const [ManagerApprovedCount, setManagerApprovedCount] = useState(0);
   const [ProductRefusedCount, setProductRefusedCount] = useState(0);
@@ -88,6 +90,15 @@ function Dashboard({ userType, userID }: DashboardProps) {
 
     axios.get('http://localhost:3001/count/products_refused')
       .then(response => setProductRefusedCount(response.data.count))
+      .catch(error => console.error("There was an error fetching the product_request count!", error));
+
+
+      axios.get('http://localhost:3001/count/product_available')
+      .then(response => setProductAvailableCount(response.data.count))
+      .catch(error => console.error("There was an error fetching the product_request count!", error));
+      
+      axios.get('http://localhost:3001/count/product_out_of_stock')
+      .then(response => setProductOutOfStockCount(response.data.count))
       .catch(error => console.error("There was an error fetching the product_request count!", error));
 
   }, []);
@@ -266,13 +277,43 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <div className="small-box bg-success">
+                    <div className="small-box bg-warning">
                       <div className="inner">
                         <h3>{productCount}</h3>
                         <p>ทรัพย์สิน</p>
                       </div>
                       <div className="icon">
                         <i className="ion ion-bag" />
+                      </div>
+                    </div>
+                  </div>
+                  {/* ./col */}
+
+                  {/* ./col */}
+                  <div className="col-lg-3 col-6">
+                    {/* small box */}
+                    <div className="small-box bg-success">
+                      <div className="inner">
+                        <h3>{ProductAvailableCount}</h3>
+                        <p>มีอยู่</p>
+                      </div>
+                      <div className="icon">
+                        <i className="ion ion-checkmark-circled" />
+                      </div>
+                    </div>
+                  </div>
+                  {/* ./col */}
+
+                  {/* ./col */}
+                  <div className="col-lg-3 col-6">
+                    {/* small box */}
+                    <div className="small-box bg-danger">
+                      <div className="inner">
+                        <h3>{ProductOutOfStockCount}</h3>
+                        <p>หมด</p>
+                      </div>
+                      <div className="icon">
+                        <i className="ion ion-android-cancel" />
                       </div>
                     </div>
                   </div>
