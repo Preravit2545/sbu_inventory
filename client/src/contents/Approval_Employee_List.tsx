@@ -19,7 +19,7 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
   const [selectedStatus, setSelectedStatus] = useState<string>("ทั้งหมด");
   const [showSearch, setShowSearch] = useState(true);
   const [showFilters, setShowFilters] = useState(true);
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortOrder, setSortOrder] = useState<string>('desc');
 
   const getApprovalRequests = () => {
     if (!userID) return;
@@ -208,7 +208,7 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
               <td>{val.product_name}</td>
               <td>{val.quantity}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
-              <td style={{ color: val.status === 'รอดำเนินการ' || val.status === 'ได้รับการอนุมัติจากเจ้าหน้าที่' ? 'orange' : (val.status === 'ยกเลิกโดยพนักงาน' || val.status === 'ถูกปฏิเสธ' ? 'red' : 'green') }}>
+              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : val.status === 'ได้รับการอนุมัติจากเจ้าหน้าที่' ? 'blue' : val.status === 'ได้รับการอนุมัติจากผู้จัดการ' ? 'green' : 'red' }}>
                 {val.status}
               </td>
               <td>
