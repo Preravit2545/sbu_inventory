@@ -16,6 +16,7 @@ import ProtectedRoute from './contents/ProtectedRoute';
 import ApprovalStaffList from './contents/approval_staff_list';
 import ApprovalEmployeeList from './contents/Approval_Employee_List';
 import ApprovalManagerList from './contents/Approval_Manager_List';
+import ApprovalAllList from './contents/Approval_All_List';
 
 function App() {
   const location = useLocation();
@@ -93,6 +94,14 @@ function App() {
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <Request_Product userID={userID} /> {/* Pass userID here */}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Approval_All_List"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <ApprovalAllList userID={userID} />
               </ProtectedRoute>
             }
           />

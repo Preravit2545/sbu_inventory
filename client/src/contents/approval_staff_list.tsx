@@ -156,7 +156,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
 
   return (
     <div className="content-wrapper">
-      <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติ</h3>
+      <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติสำหรับเจ้าหน้าที่</h3>
 
       {/* Search Input */}
       <Form.Group controlId="searchQuery">
@@ -213,7 +213,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
               <td>{val.quantity}</td>
               <td>{val.emp_firstname} {val.emp_lastname}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
-              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : 'green' }}>
+              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : val.status === 'ได้รับการอนุมัติจากเจ้าหน้าที่' ? 'blue' : 'green'}}>
                 {val.status}
               </td>
               <td>

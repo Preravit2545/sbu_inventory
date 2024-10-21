@@ -121,7 +121,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
 
   return (
     <div className="content-wrapper">
-      <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติ</h3>
+      <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติสำหรับผู้จัดการ</h3>
 
       {/* Search and Filter Section */}
       <div className="search-filter-container">
@@ -182,7 +182,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
               <td>{val.quantity}</td>
               <td>{val.emp_firstname} {val.emp_lastname}</td>
               <td>{new Date(val.request_date).toLocaleDateString()}</td>
-              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : 'green' }}>
+              <td style={{ color: val.status === 'รอดำเนินการ' ? 'orange' : val.status === 'ได้รับการอนุมัติจากเจ้าหน้าที่' ? 'blue' : 'green'}}>
                 {val.status}
               </td>
               <td>

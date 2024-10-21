@@ -97,6 +97,12 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                       <p>{"อนุมัติทรัพย์สิน (Staff)"}</p>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to="/Approval_All_List" className="nav-link">
+                      <i className="nav-icon ion ion-android-clipboard" />
+                      <p>รายการคำขอเบิกทั้งหมด</p>
+                    </Link>
+                  </li>
                 </>
               )}
 
@@ -121,6 +127,12 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                     <Link to="/Approval_Manager_List" className="nav-link">
                       <i className="nav-icon ion ion-bag" />
                       <p>{"อนุมัติทรัพย์สิน (Manager)"}</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/Approval_All_List" className="nav-link">
+                      <i className="nav-icon ion ion-android-clipboard" />
+                      <p>รายการคำขอเบิกทั้งหมด</p>
                     </Link>
                   </li>
                 </>
