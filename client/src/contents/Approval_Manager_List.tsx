@@ -104,7 +104,7 @@ const ApprovalManagerList: React.FC<ApprovalmanagerListProps> = ({ userID }) => 
     Swal.fire({
       icon: 'info',
       title: 'ข้อมูลใหม่เข้ามา!',
-      text: 'มีคำขอใหม่ที่ต้องพิจารณา',
+      text: 'มีคำขอที่ต้องพิจารณา',
       timer: 5000,
       timerProgressBar: true,
       showConfirmButton: false,

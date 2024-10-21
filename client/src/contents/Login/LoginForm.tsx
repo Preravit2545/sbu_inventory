@@ -86,8 +86,8 @@ function LoginForm({ onLogin }: LoginFormProps) {
                         >
                             <option value="employee">พนักงาน</option>
                             <option value="staff">เจ้าหน้าที่ทั่วไป</option>
-                            <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
                             <option value="manager">ผู้จัดการ</option>
+                            <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
                             <option value="admin">ผู้ดูแลระบบ</option>
                         </select>
                     </div>

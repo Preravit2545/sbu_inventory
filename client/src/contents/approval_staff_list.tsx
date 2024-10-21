@@ -81,7 +81,6 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
           title: 'สำเร็จ!',
           text: `คำขอได้รับการ ${approvalStatus === 'approve' ? 'อนุมัติ' : 'ปฏิเสธ'}!`,
         });
-        getApprovalRequests(); // Refresh list after update
       })
       .catch((error) => {
         console.error("Error updating status:", error);
@@ -109,7 +108,7 @@ const ApprovalStaffList: React.FC<ApprovalStaffListProps> = ({ userID }) => {
             Swal.fire({
               icon: 'info',
               title: 'ข้อมูลใหม่เข้ามา!',
-              text: 'มีคำขอใหม่ที่ต้องพิจารณา',
+              text: 'มีคำขอที่ต้องพิจารณา',
               timer: 5000,
               timerProgressBar: true,
               showConfirmButton: false,

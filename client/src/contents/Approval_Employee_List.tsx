@@ -24,20 +24,12 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
   const getApprovalRequests = () => {
     if (!userID) return;
 
-    Swal.fire({
-      title: 'กำลังโหลดข้อมูล...',
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-
     axios.get(`http://localhost:3001/approval_employee_list`, {
       params: { employee_id: userID }
     })
       .then((response) => {
         setRequestList(response.data);
         setFilteredRequestList(response.data);
-        Swal.close(); // ปิดการแจ้งเตือนเมื่อโหลดเสร็จ
       })
       .catch((error) => {
         console.error('Error fetching approval requests:', error);
@@ -63,6 +55,7 @@ const ApprovalemployeeList: React.FC<ApprovalemployeeListProps> = ({ userID }) =
             // Remove the deleted request from the list
             setRequestList((prevList) => prevList.filter((request) => request.request_id !== requestId));
             setFilteredRequestList((prevList) => prevList.filter((request) => request.request_id !== requestId));
+            getApprovalRequests();
           })
           .catch((error) => {
             console.error('Error deleting request:', error);

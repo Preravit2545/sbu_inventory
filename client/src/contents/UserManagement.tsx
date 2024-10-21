@@ -327,6 +327,14 @@ function UserManagement() {
                                                 onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
                                             />
                                         </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="image" className="form-label">Image :</label>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
+                                            />
+                                        </div>
                                         <button className="btn btn-success" onClick={() => handleUpdateUser(val.id, position)}>
                                             Update
                                         </button>
