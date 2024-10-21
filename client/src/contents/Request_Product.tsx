@@ -169,6 +169,7 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                   <option value="อุปกรณ์ไอที">อุปกรณ์ไอที</option>
                   <option value="อุปกรณ์เครื่องใช้สำนักงาน">อุปกรณ์เครื่องใช้สำนักงาน</option>
                   <option value="อุปกรณ์การศึกษา">อุปกรณ์การศึกษา</option>
+                  <option value="อุปกรณ์กีฬาและสันทนาการ">อุปกรณ์กีฬาและสันทนาการ</option>
                 </Form.Control>
               </Form.Group>
 
