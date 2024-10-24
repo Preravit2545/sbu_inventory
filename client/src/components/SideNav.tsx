@@ -64,7 +64,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
               <li className="nav-item">
                 <Link to="/dashboard" className="nav-link">
                   <i className="nav-icon ion ion-pie-graph" />
-                  <p>Dashboard</p>
+                  <p>แดชบอร์ด</p>
                 </Link>
               </li>
 
@@ -94,7 +94,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                   <li className="nav-item">
                     <Link to="/Approval_Staff_List" className="nav-link">
                       <i className="nav-icon ion ion-checkmark" />
-                      <p>{"อนุมัติทรัพย์สิน (Staff)"}</p>
+                      <p>{"อนุมัติทรัพย์สิน(เจ้าหน้าที่)"}</p>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -126,7 +126,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                   <li className="nav-item">
                     <Link to="/Approval_Manager_List" className="nav-link">
                       <i className="nav-icon ion ion-bag" />
-                      <p>{"อนุมัติทรัพย์สิน (Manager)"}</p>
+                      <p>{"อนุมัติทรัพย์สิน(ผู้จัดการ)"}</p>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -163,7 +163,7 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
               <li className="nav-item">
                 <button className="nav-link" onClick={handleLogout}>
                   <i className="nav-icon ion ion-log-out" />
-                  <p>Logout</p>
+                  <p>ออกจากระบบ</p>
                 </button>
               </li>
             </ul>

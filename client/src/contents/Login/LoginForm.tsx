@@ -19,7 +19,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
         setLoading(true);
 
         if (username.trim() === "" || password.trim() === "") {
-            setError("กรุณาใส่ข้อมูล Username และ Password.");
+            setError("กรุณาใส่ข้อมูล รหัสผู้ใช้ และ รหัสผ่าน");
             setLoading(false);
             return;
         }
@@ -36,7 +36,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
                 onLogin(userID, userType, name, image); // Pass userID to onLogin
             })
             .catch(() => {
-                setError("Username หรือ Password ไม่ถูกต้อง");
+                setError("รหัสผู้ใช้ หรือ รหัสผ่าน ไม่ถูกต้อง");
             })
             .finally(() => {
                 setLoading(false);
@@ -51,12 +51,12 @@ function LoginForm({ onLogin }: LoginFormProps) {
                     {error && <div className="error-message">{error}</div>}
                     
                     <div className="input-group">
-                        <label htmlFor="username" className="form-label">Username:</label>
+                        <label htmlFor="username" className="form-label">รหัสผู้ใช้:</label>
                         <input
                             type="text"
                             id="username"
                             className="form-input"
-                            placeholder="Enter your username"
+                            placeholder="กรอกรหัสผู้ใช้"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             aria-required="true"
@@ -64,12 +64,12 @@ function LoginForm({ onLogin }: LoginFormProps) {
                     </div>
                     
                     <div className="input-group">
-                        <label htmlFor="password" className="form-label">Password:</label>
+                        <label htmlFor="password" className="form-label">รหัสผ่าน:</label>
                         <input
                             type="password"
                             id="password"
                             className="form-input"
-                            placeholder="Enter your password"
+                            placeholder="กรอกรหัสผ่าน"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             aria-required="true"
@@ -77,7 +77,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
                     </div>
                     
                     <div className="input-group">
-                        <label htmlFor="userType" className="form-label">Login as:</label>
+                        <label htmlFor="userType" className="form-label">เข้าสู่ระบบโดย:</label>
                         <select
                             id="userType"
                             className="form-select"
@@ -93,7 +93,7 @@ function LoginForm({ onLogin }: LoginFormProps) {
                     </div>
 
                     <button type="submit" className="login-button" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
+                        {loading ? "กำลังเข้าสู่ระบบ..." : "ล็อกอิน"}
                     </button>
                 </form>
             </div>

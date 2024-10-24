@@ -197,14 +197,14 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
         <table className="table table-bordered product-table">
           <thead>
             <tr>
-              <th>No.</th>
+              <th>รหัส</th>
               <th>รูป</th>
               <th>ชื่อทรัพย์สิน</th>
               <th>ประเภท</th>
               <th>จำนวน</th>
               <th>สถานะ</th>
               <th>รอดำเนินการ</th>
-              <th>Actions</th>
+              <th>การจัดการ</th>
             </tr>
           </thead>
           <tbody>

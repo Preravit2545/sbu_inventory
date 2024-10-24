@@ -109,7 +109,7 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                     style={{ width: '100px', height: '100px', marginBottom: '10px' }}
                   />
                 )}
-                <label htmlFor="username" className="form-label">Username :</label>
+                <label htmlFor="username" className="form-label">รหัสผู้ใช้ :</label>
                 <input
                   type="text"
                   className="form-control"
@@ -121,22 +121,22 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="newPassword" className="form-label">New Password :</label>
+                <label htmlFor="newPassword" className="form-label">รหัสผ่านใหม่ :</label>
                 <input
                   type="password"
                   className="form-control"
-                  placeholder="Enter New Password"
+                  placeholder="กรอกรหัสผ่านใหม่"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
 
               <div className="mb-3">
-                <label htmlFor="confirmPassword" className="form-label">Confirm New Password :</label>
+                <label htmlFor="confirmPassword" className="form-label">ยืนยันรหัสผ่านใหม่ :</label>
                 <input
                   type="password"
                   className="form-control"
-                  placeholder="Confirm New Password"
+                  placeholder="กรอกยืนยันรหัสผ่านใหม่"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
@@ -147,7 +147,7 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter Firstname"
+                  placeholder="กรอกชื่อจริง"
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
                 />
@@ -158,7 +158,7 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter Lastname"
+                  placeholder="กรอกนามสกุล"
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
                 />
@@ -169,14 +169,14 @@ const EditUserForm: React.FC<RequestUserProps> = ({ userID, userType }) => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter Phone"
+                  placeholder="กรอกเบอร์โทร"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
 
               <div className="mb-3">
-                <label htmlFor="profilePicture" className="form-label">Profile Picture :</label>
+                <label htmlFor="profilePicture" className="form-label">รูปโปรไฟล์ :</label>
                 <input
                   type="file"
                   className="form-control"

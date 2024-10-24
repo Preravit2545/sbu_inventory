@@ -149,8 +149,11 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
                 {val.status}
               </td>
               <td>
-                <button className="btn btn-success" onClick={() => ViewingRequest(val)}>
+                <button className="btn btn-info" onClick={() => ViewingRequest(val)}>
                   ดูรายละเอียดคำขอ
+                </button>
+                <button className="btn btn-danger">
+                  PDF
                 </button>
               </td>
             </tr>

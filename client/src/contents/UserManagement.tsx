@@ -161,22 +161,22 @@ function UserManagement() {
                     <div className="container-fluid">
                         {/* Form Fields */}
                         <div className="mb-3">
-                            <label htmlFor="username" className="form-label">Username :</label>
+                            <label htmlFor="username" className="form-label">รหัสผู้ใช้ :</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Username"
+                                placeholder="กรอกรหัสผู้ใช้"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="password" className="form-label">Password :</label>
+                            <label htmlFor="password" className="form-label">รหัสผ่าน :</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Password"
+                                placeholder="กรอกรหัสผ่าน"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -187,7 +187,7 @@ function UserManagement() {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Name"
+                                placeholder="กรอกชื่อจริง"
                                 value={firstname}
                                 onChange={(e) => setFirstname(e.target.value)}
                             />
@@ -198,7 +198,7 @@ function UserManagement() {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Surname"
+                                placeholder="กรอกนามสกุล"
                                 value={lastname}
                                 onChange={(e) => setLastname(e.target.value)}
                             />
@@ -209,7 +209,7 @@ function UserManagement() {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter Phone"
+                                placeholder="กรอกเบอร์โทร"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                             />
@@ -231,7 +231,7 @@ function UserManagement() {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="profilePicture" className="form-label">Profile Picture :</label>
+                            <label htmlFor="profilePicture" className="form-label">รูปโปรไฟล์ :</label>
                             <input
                                 type="file"
                                 className="form-control"
@@ -283,7 +283,7 @@ function UserManagement() {
                                 {editMode === val.id ? (
                                     <>
                                         <div className="mb-3">
-                                            <label>Username:</label>
+                                            <label>รหัสผู้ใช้:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -292,7 +292,7 @@ function UserManagement() {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label>Password:</label>
+                                            <label>รหัสผ่าน:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -301,7 +301,7 @@ function UserManagement() {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label>First Name:</label>
+                                            <label>ชื่อจริง:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -310,7 +310,7 @@ function UserManagement() {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label>Last Name:</label>
+                                            <label>นามสกุล:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -319,7 +319,7 @@ function UserManagement() {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label>Phone:</label>
+                                            <label>เบอร์โทร:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -328,7 +328,7 @@ function UserManagement() {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="image" className="form-label">Image :</label>
+                                            <label htmlFor="image" className="form-label">รูปโปรไฟล์:</label>
                                             <input
                                                 type="file"
                                                 className="form-control"
@@ -336,10 +336,10 @@ function UserManagement() {
                                             />
                                         </div>
                                         <button className="btn btn-success" onClick={() => handleUpdateUser(val.id, position)}>
-                                            Update
+                                            อัพเดต
                                         </button>
                                         <button className="btn btn-secondary" onClick={() => setEditMode(null)}>
-                                            Cancel
+                                            ยกเลิก
                                         </button>
                                     </>
                                 ) : (
@@ -356,10 +356,10 @@ function UserManagement() {
                                         <p className="card-text">นามสกุล : {val.lastname}</p>
                                         <p className="card-text">เบอร์โทร : {val.phone}</p>
                                         <button className="btn btn-warning" onClick={() => handleEditUser(val)}>
-                                            Edit
+                                            แก้ไข
                                         </button>
                                         <button className="btn btn-danger" onClick={() => deleteUser(val.id, position)}>
-                                            Delete {position === 'staff' ? 'เจ้าหน้าที่ทั่วไป' :
+                                            ลบ {position === 'staff' ? 'เจ้าหน้าที่ทั่วไป' :
                                                 position === 'employee' ? 'พนักงาน' :
                                                     position === 'staff_stock' ? 'พนักงานสต๊อก' : 'ผู้จัดการ'}
                                         </button>
