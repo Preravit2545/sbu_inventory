@@ -3,10 +3,11 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx'; // Import xlsx for Excel export
 
 interface ApprovalAllListProps {
-  userID: number | null; // Define the userID prop type
+  userID: number | null;
 }
 
 const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
@@ -14,11 +15,11 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
-  const [approvalStatus, setApprovalStatus] = useState<string>(''); // Track selected status
-  const [staffRemark, setStaffRemark] = useState<string>(''); // Store staff remark
-  const [searchQuery, setSearchQuery] = useState<string>(''); // Store search input
-  const [sortOrder, setSortOrder] = useState<string>('desc'); // State for sort order
-  const [selectedStatus, setSelectedStatus] = useState<string>('ทั้งหมด'); // Filter based on status
+  const [approvalStatus, setApprovalStatus] = useState<string>('');
+  const [staffRemark, setStaffRemark] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('desc');
+  const [selectedStatus, setSelectedStatus] = useState<string>('ทั้งหมด');
 
   const getApprovalRequests = () => {
     axios.get('http://localhost:3001/approval_all_list')
@@ -35,6 +36,14 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
       });
   };
 
+  useEffect(() => {
+    getApprovalRequests();
+    const interval = setInterval(() => {
+      getApprovalRequests();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   const ViewingRequest = (request: any) => {
     setSelectedRequest(request);
     setShowModal(true);
@@ -45,24 +54,58 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
     setSelectedRequest(null);
   };
 
-  useEffect(() => {
-    getApprovalRequests();
+  const exportToExcel = () => {
+    // Filter the requestList based on the selected status
+    const filteredRequests = selectedStatus === 'ทั้งหมด'
+      ? requestList
+      : requestList.filter(request => request.status === selectedStatus);
 
-    const interval = setInterval(() => {
-      getApprovalRequests();
-    }, 5000); // 5 วินาที
+    // Map filtered requests to include Thai column headers
+    const mappedData = filteredRequests.map((request) => ({
+      'รหัสการร้องขอ': request.request_id,
+      'ชื่อทรัพย์สิน': request.product_name,
+      'จำนวน': request.quantity,
+      'เหตุผลที่เบิก': request.reason,
+      'วันที่ร้องขอ': new Date(request.request_date).toLocaleDateString(),
+      'เจ้าหน้าที่อนุมัติ': request.staff_firstname || '',
+      'ผู้จัดการอนุมัติ': request.m_firstname || '',
+      'ความเห็นของเจ้าหน้าที่': request.staff_remark || '',
+      'ความเห็นของผู้จัดการ': request.manager_remark || '',
+      'สถานะ': request.status,
+    }));
 
-    return () => clearInterval(interval);
-  }, []);
+    const worksheet = XLSX.utils.json_to_sheet(mappedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Approval Requests");
 
-  // Filtered request list based on search query and status
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 12 },  // Column A
+      { wch: 14 },  // Column B
+      { wch: 8 },   // Column C
+      { wch: 17 },  // Column D
+      { wch: 10 },  // Column E
+      { wch: 17 },  // Column F
+      { wch: 17 },  // Column G
+      { wch: 22 },  // Column H
+      { wch: 22 },  // Column I
+      { wch: 24 },  // Column J
+    ];
+
+    // Get the current date in DD-MM-YYYY format
+    const now = new Date();
+    const currentDate = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
+
+    // Use the current date in the file name
+    XLSX.writeFile(workbook, `ApprovalRequests_${currentDate}.xlsx`);
+  };
+
   const filteredRequests = requestList.filter(request =>
     (request.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       request.request_id.toString().includes(searchQuery)) &&
     (selectedStatus === 'ทั้งหมด' || request.status === selectedStatus)
   );
 
-  // Sort filtered requests based on sort order
   const sortedRequests = filteredRequests.sort((a, b) => {
     const dateA = new Date(a.request_date).getTime();
     const dateB = new Date(b.request_date).getTime();
@@ -73,7 +116,7 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
     <div className="content-wrapper">
       <h3 style={{ margin: '10px' }}>รายการคำขออนุมัติทั้งหมด</h3>
 
-      {/* Search Input */}
+      {/* Search, Sort, and Filter Controls */}
       <Form.Group controlId="searchQuery">
         <Form.Control
           type="text"
@@ -83,7 +126,7 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
         />
       </Form.Group>
 
-      {/* Sort Dropdown */}
+      {/* Sort and Filter dropdowns */}
       <Form.Group controlId="sortOrder">
         <Form.Label>เรียงลำดับตามวันที่ร้องขอ</Form.Label>
         <Form.Control
@@ -96,7 +139,6 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
         </Form.Control>
       </Form.Group>
 
-      {/* Filter Status Dropdown */}
       <Form.Group controlId="selectedStatus">
         <Form.Label>เลือกสถานะ</Form.Label>
         <Form.Control
@@ -113,6 +155,12 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
         </Form.Control>
       </Form.Group>
 
+      {/* Export Button */}
+      <Button variant="success" onClick={exportToExcel} style={{ margin: '10px' }}>
+        ส่งออกเป็น Excel
+      </Button>
+
+      {/* Table and Modals */}
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -151,9 +199,6 @@ const ApprovalAllList: React.FC<ApprovalAllListProps> = ({ userID }) => {
               <td>
                 <button className="btn btn-info" onClick={() => ViewingRequest(val)}>
                   ดูรายละเอียดคำขอ
-                </button>
-                <button className="btn btn-danger">
-                  PDF
                 </button>
               </td>
             </tr>

@@ -239,8 +239,8 @@ function ProductManagement() {
                                             />
                                         </div>
 
-                                        <button type="submit" className="btn btn-success">Update</button>
-                                        <button type="button" className="btn btn-secondary" onClick={cancelEdit}>Cancel</button>
+                                        <button type="submit" className="btn btn-success">อัพเดต</button>
+                                        <button type="button" className="btn btn-secondary" onClick={cancelEdit}>ยกเลิกแก้ไข</button>
                                     </form>
                                 ) : (
                                     <>
@@ -250,8 +250,8 @@ function ProductManagement() {
                                         <p className="card-text">ประเภททรัพย์สิน : {val.type}</p>
                                         <p className="card-text">จำนวน : {val.qty}</p>
                                         <p className="card-text">สถานะ : {val.status}</p>
-                                        <button className="btn btn-warning" onClick={() => startEditingProduct(val)}>Edit</button>
-                                        <button className="btn btn-danger" onClick={() => deleteProduct(val.id)}>Delete</button>
+                                        <button className="btn btn-warning" onClick={() => startEditingProduct(val)}>แก้ไข</button>
+                                        <button className="btn btn-danger" onClick={() => deleteProduct(val.id)}>ลบ</button>
                                     </>
                                 )}
                             </div>

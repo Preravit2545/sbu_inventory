@@ -116,6 +116,18 @@ function SideNav({ userType, userName, userImage, onLogout }: SideNavProps) {
                       <p>จัดการข้อมูลทรัพย์สิน</p>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to="/Approval_Staff_List" className="nav-link">
+                      <i className="nav-icon ion ion-checkmark" />
+                      <p>{"อนุมัติทรัพย์สิน(เจ้าหน้าที่)"}</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/Approval_All_List" className="nav-link">
+                      <i className="nav-icon ion ion-android-clipboard" />
+                      <p>รายการคำขอเบิกทั้งหมด</p>
+                    </Link>
+                  </li>
                 </>
               )}
 

@@ -632,7 +632,7 @@ app.get('/approval_all_list', (req, res) => {
            e.lastname AS emp_lastname, e.phone AS emp_phone, m.firstname AS m_firstname, s.firstname AS staff_firstname
     FROM approval_products ap
     LEFT JOIN manager m ON ap.manager_approved_by = m.id
-    LEFT JOIN staff s ON ap.staff_approved_by = s.id
+    LEFT JOIN staff_stock s ON ap.staff_approved_by = s.id
     JOIN products p ON ap.product_id = p.id
     JOIN employees e ON ap.employee_id = e.id
 
@@ -663,7 +663,7 @@ app.get('/approval_employee_list', (req, res) => {
            e.lastname AS emp_lastname, e.phone AS emp_phone, m.firstname AS m_firstname, s.firstname AS staff_firstname
     FROM approval_products ap
     LEFT JOIN manager m ON ap.manager_approved_by = m.id
-    LEFT JOIN staff s ON ap.staff_approved_by = s.id
+    LEFT JOIN staff_stock s ON ap.staff_approved_by = s.id
     JOIN products p ON ap.product_id = p.id
     JOIN employees e ON ap.employee_id = e.id
     WHERE ap.employee_id = ?
@@ -717,7 +717,7 @@ app.get('/approval_manager_list', (req, res) => {
       FROM approval_products ap
       JOIN products p ON ap.product_id = p.id
       JOIN employees e ON ap.employee_id = e.id
-      JOIN staff s ON ap.staff_approved_by = s.id
+      JOIN staff_stock s ON ap.staff_approved_by = s.id
       WHERE ap.status = 'ได้รับการอนุมัติจากเจ้าหน้าที่'
     `;
 

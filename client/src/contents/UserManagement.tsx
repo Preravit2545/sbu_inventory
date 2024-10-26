@@ -224,7 +224,7 @@ function UserManagement() {
                             >
                                 <option value="">--เลือกตำแหน่ง--</option>
                                 <option value="employee">พนักงาน</option>
-                                <option value="staff">เจ้าหน้าที่ทั่วไป</option>
+                                {/*   <option value="staff">เจ้าหน้าที่ทั่วไป</option> */}
                                 <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
                                 <option value="manager">ผู้จัดการ</option>
                             </select>
@@ -253,13 +253,13 @@ function UserManagement() {
                     >
                         แสดงพนักงาน
                     </button>
-
+                    {/* 
                     <button
                         className={`btn ${position === 'staff' ? 'btn-primary' : 'btn-secondary'}`}
                         onClick={() => setPosition('staff')}
                     >
                         แสดงเจ้าหน้าที่ทั่วไป
-                    </button>
+                    </button> */}
 
                     <button
                         className={`btn ${position === 'staff_stock' ? 'btn-primary' : 'btn-secondary'}`}

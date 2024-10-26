@@ -85,9 +85,8 @@ function LoginForm({ onLogin }: LoginFormProps) {
                             onChange={(e) => setUserType(e.target.value as 'staff' | 'employee' | 'admin' | 'staff_stock' | 'manager')}
                         >
                             <option value="employee">พนักงาน</option>
-                            <option value="staff">เจ้าหน้าที่ทั่วไป</option>
-                            <option value="manager">ผู้จัดการ</option>
                             <option value="staff_stock">เจ้าหน้าที่สต๊อก</option>
+                            <option value="manager">ผู้จัดการ</option>
                             <option value="admin">ผู้ดูแลระบบ</option>
                         </select>
                     </div>

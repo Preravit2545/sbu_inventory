@@ -143,10 +143,9 @@ function Dashboard({ userType, userID }: DashboardProps) {
                   </div>
                   {/* ./col */}
 
-
-                  {/* ./col */}
+                  {/* ./col 
                   <div className="col-lg-3 col-6">
-                    {/* small box */}
+
                     <div className="small-box bg-danger">
                       <div className="inner">
                         <h3>{staffCount}</h3>
@@ -157,9 +156,8 @@ function Dashboard({ userType, userID }: DashboardProps) {
                       </div>
                     </div>
                   </div>
-                  {/* ./col */}
-
-
+                */}
+                
                   {/* ./col */}
                   <div className="col-lg-3 col-6">
                     {/* small box */}
