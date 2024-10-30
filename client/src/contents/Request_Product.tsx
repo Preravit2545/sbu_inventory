@@ -319,7 +319,8 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                   >
                     <option value="">-- เลือกเหตุผล --</option>
                     <option value="ของเก่าชำรุด">ของเก่าชำรุด</option>
-                    <option value="ใช้สนับสนุนการเรียนการสอน">ใช้สนับสนุนการเรียนการสอน</option>
+                    <option value="ใช้สำหรับการเรียนการสอน">ใช้สำหรับการเรียนการสอน</option>
+                    <option value="ใช้ทำกิจกรรมภายในมหาวิทยาลัย">ใช้ทำกิจกรรมภายในมหาวิทยาลัย</option>
                     <option value="อื่นๆ">อื่นๆ</option>
                   </Form.Control>
                   {requestReason === "อื่นๆ" && (
