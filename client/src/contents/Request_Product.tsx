@@ -18,6 +18,7 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestQty, setRequestQty] = useState<number>(0);
   const [requestReason, setRequestReason] = useState<string>("");
+  const [otherReason, setOtherReason] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("ทั้งหมด");
@@ -52,11 +53,14 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
 
   const handleSubmitRequest = async () => {
     if (requestQty > 0 && requestQty <= selectedProduct.qty) {
+
+      const reason = requestReason === "อื่นๆ" ? otherReason : requestReason;
+
       const requestData = {
         employee_id: userID,
         product_id: selectedProduct.id,
         quantity: requestQty,
-        reason: requestReason,
+        reason: reason,
       };
 
       try {
@@ -291,7 +295,8 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                     className="product-image"
                   />
                   <span><strong>ชื่อ:</strong> {selectedProduct.name}</span>
-                  <p><strong>จำนวนที่สามารถเบิกได้:</strong> {selectedProduct.qty}</p>
+                  <p><strong>จำนวนคงเหลือ:</strong> {selectedProduct.qty}</p>
+                  <p><strong>จำนวนที่สามารถเบิกได้ต่อครั้ง:</strong> {selectedProduct.limited_qty}</p>
                 </div>
               )}
               <Form>
@@ -300,7 +305,7 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                   <Form.Control
                     type="number"
                     min="1"
-                    max={selectedProduct.qty}
+                    max={selectedProduct.limited_qty}
                     value={requestQty}
                     onChange={(e) => setRequestQty(Number(e.target.value))}
                   />
@@ -308,11 +313,25 @@ const Request_Product: React.FC<RequestProductProps> = ({ userID }) => {
                 <Form.Group controlId="requestReason">
                   <Form.Label>เหตุผลในการเบิก</Form.Label>
                   <Form.Control
-                    as="textarea"
-                    rows={3}
+                    as="select"
                     value={requestReason}
                     onChange={(e) => setRequestReason(e.target.value)}
-                  />
+                  >
+                    <option value="">-- เลือกเหตุผล --</option>
+                    <option value="ของเก่าชำรุด">ของเก่าชำรุด</option>
+                    <option value="ใช้สนับสนุนการเรียนการสอน">ใช้สนับสนุนการเรียนการสอน</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                  </Form.Control>
+                  {requestReason === "อื่นๆ" && (
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="ระบุเหตุผลเพิ่มเติม"
+                      value={otherReason}
+                      onChange={(e) => setOtherReason(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
                 </Form.Group>
               </Form>
             </Modal.Body>

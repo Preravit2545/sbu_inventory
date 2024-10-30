@@ -245,16 +245,16 @@ app.get('/product', (req, res) => {
 });
 
 app.post('/addproduct', upload.single('image'), (req, res) => {
-    const { name, type, qty } = req.body;
+    const { name, type, qty, limited_qty } = req.body;
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
 
     // Set status based on quantity
     const status = qty > 0 ? "มี" : "หมด";
 
     // Correct the SQL statement to match the number of values
-    const sqlInsert = "INSERT INTO products (name, type, qty, image, status) VALUES (?, ?, ?, ?, ?)";
+    const sqlInsert = "INSERT INTO products (name, type, qty, limited_qty, image, status) VALUES (?, ?, ?, ?, ?, ?)";
 
-    db.query(sqlInsert, [name, type, qty, image, status], (err, result) => {
+    db.query(sqlInsert, [name, type, qty, limited_qty, image, status], (err, result) => {
         if (err) {
             console.error("Error inserting product:", err);
             res.status(500).send("An error occurred while inserting the product.");
@@ -435,13 +435,13 @@ app.delete('/delete/manager/:id', (req, res) => {
 // Define the /updateproduct route
 app.put('/updateproduct/:id', upload.single('image'), (req, res) => {
     const { id } = req.params;
-    const { name, type, qty } = req.body;
+    const { name, type, qty,limited_qty } = req.body;
     const image = req.file ? req.file.buffer : null; // Get the image buffer if uploaded
 
     const status = qty > 0 ? "มี" : "หมด";
 
-    let sqlUpdate = "UPDATE products SET name = ?, type = ?, qty = ?, status = ?";
-    const params = [name, type, qty, status];
+    let sqlUpdate = "UPDATE products SET name = ?, type = ?, qty = ?, limited_qty = ?, status = ?";
+    const params = [name, type, qty, limited_qty, status];
 
     if (image) {
         sqlUpdate += ", image = ?";

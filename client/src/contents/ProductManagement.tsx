@@ -6,6 +6,7 @@ function ProductManagement() {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [qty, setQty] = useState(0);
+    const [limited_qty, setlimitedQty] = useState(0);
     const [image, setImage] = useState<File | null>(null);
     const [status, setStatus] = useState(1);
     const [ProductList, setProductList] = useState<any[]>([]);
@@ -46,18 +47,19 @@ function ProductManagement() {
 
     const handleAddProduct = (event: React.FormEvent) => {
         event.preventDefault();
-    
+
         const productData = new FormData();
         productData.append("name", name);
         productData.append("type", type);
         productData.append("qty", qty.toString());
+        productData.append("limited_qty", limited_qty.toString());
         productData.append("status", status.toString());
         if (image) {
             productData.append("image", image);
         }
-    
+
         console.log('Product Data:', productData); // Log to see what you're sending
-    
+
         axios.post('http://localhost:3001/addproduct', productData)
             .then(() => {
                 getProduct(); // Refresh the product list
@@ -69,7 +71,7 @@ function ProductManagement() {
                 Swal.fire("เกิดข้อผิดพลาด!", "ไม่สามารถเพิ่มผลิตภัณฑ์ได้", "error");
             });
     };
-    
+
 
     // start UPDATE
     const handleEditProduct = (event: React.FormEvent, id: number) => {
@@ -79,6 +81,7 @@ function ProductManagement() {
         productData.append("name", name);
         productData.append("type", type);
         productData.append("qty", qty.toString());
+        productData.append("limited_qty", limited_qty.toString());
         productData.append("status", status.toString());
         if (image) {
             productData.append("image", image);
@@ -99,6 +102,7 @@ function ProductManagement() {
     const resetForm = () => {
         setName("");
         setQty(0);
+        setlimitedQty(0);
         setImage(null);
         setStatus(1);
         setEditingProduct(null);
@@ -109,6 +113,7 @@ function ProductManagement() {
         setName(product.name);
         setType(product.type);
         setQty(product.qty);
+        setlimitedQty(product.limited_qty);
         setStatus(product.status);
         setImage(null);
     };
@@ -147,6 +152,16 @@ function ProductManagement() {
                                 placeholder="0"
                                 value={qty}
                                 onChange={(e) => setQty(Number(e.target.value))}
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="qty" className="form-label">จำนวนที่เบิกได้ต่อครั้ง :</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                placeholder="0"
+                                value={limited_qty}
+                                onChange={(e) => setlimitedQty(Number(e.target.value))}
                             />
                         </div>
                         <div className="mb-3">
@@ -217,6 +232,16 @@ function ProductManagement() {
                                         </div>
 
                                         <div className="mb-3">
+                                            <label htmlFor="limitedqty" className="form-label">จำนวนการเบิกต่อครั้ง :</label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                value={limited_qty}
+                                                onChange={(e) => setlimitedQty(Number(e.target.value))}
+                                            />
+                                        </div>
+
+                                        <div className="mb-3">
                                             <label htmlFor="type" className="form-label">ประเภททรัพย์สิน :</label>
                                             <select
                                                 className="form-control"
@@ -249,6 +274,7 @@ function ProductManagement() {
                                         <p className="card-text">ชื่อทรัพย์สิน : {val.name}</p>
                                         <p className="card-text">ประเภททรัพย์สิน : {val.type}</p>
                                         <p className="card-text">จำนวน : {val.qty}</p>
+                                        <p className="card-text">จำนวนที่เบิกได้ต่อครั้ง : {val.limited_qty}</p>
                                         <p className="card-text">สถานะ : {val.status}</p>
                                         <button className="btn btn-warning" onClick={() => startEditingProduct(val)}>แก้ไข</button>
                                         <button className="btn btn-danger" onClick={() => deleteProduct(val.id)}>ลบ</button>
