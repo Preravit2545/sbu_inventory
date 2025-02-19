@@ -1,6 +1,19 @@
 
 # ระบบเบิกจ่ายทรัพย์สินของมหาวิทยาลัย SBU INVENTORY SYSTEM
 
+### Client
+axios
+react-bootstrap bootstrap
+sweetalert
+
+### Server
+mysql
+cors
+express
+nodemon
+multer
+helmet
+
 ### Dashboard 
 ![Dashboard](https://github.com/user-attachments/assets/188a1477-632c-4ffc-884f-48de44ecf97d)
 
